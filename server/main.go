@@ -42,7 +42,7 @@ func main() {
 
 	// Routes
 	apiPublic.GET("/", root)
-	apiPublic.POST("/user", user.AuthUser(conn))
+	apiPublic.PATCH("/user", user.AuthUser(conn))
 	apiPublic.PUT("/user", user.CreateUser(conn))
 
 	apiPublic.GET("/posts", post.GetAll(conn))
@@ -57,8 +57,8 @@ func main() {
 	privateZone.GET("/secure", securecheck.SecureCheck(conn))
 	privateZone.GET("/users", root)
 
-	privateZone.POST("/post", post.Create(conn))
-	privateZone.PUT("/post", post.Update(conn))
+	privateZone.PUT("/post", post.Create(conn))
+	privateZone.PATCH("/post", post.Update(conn))
 
 	apiPublic.Logger.Fatal(apiPublic.Start(":" + port))
 }
