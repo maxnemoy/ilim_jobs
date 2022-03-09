@@ -42,7 +42,7 @@ func main() {
 
 	// Routes
 	apiPublic.GET("/", root)
-	apiPublic.PATCH("/user", user.AuthUser(conn))
+	apiPublic.POST("/user", user.AuthUser(conn))
 	apiPublic.PUT("/user", user.CreateUser(conn))
 
 	apiPublic.GET("/posts", post.GetAll(conn))
