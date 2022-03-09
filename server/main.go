@@ -7,6 +7,7 @@ import (
 	"github.com/maxnemoy/ilimjob_server/conf"
 	"github.com/maxnemoy/ilimjob_server/handlers/secureCheck"
 	"github.com/maxnemoy/ilimjob_server/handlers/user"
+	"github.com/maxnemoy/ilimjob_server/handlers/post"
 	"net/http"
 	"os"
 
@@ -43,6 +44,8 @@ func main() {
 	apiPublic.GET("/", root)
 	apiPublic.POST("/user", user.AuthUser(conn))
 	apiPublic.PUT("/user", user.CreateUser(conn))
+
+	apiPublic.GET("/posts", post.GetAll(conn))
 	
 
 	privateZone := apiPublic.Group("/v1")
@@ -53,6 +56,9 @@ func main() {
 	privateZone.Use(middleware.JWTWithConfig(conf))
 	privateZone.GET("/secure", securecheck.SecureCheck(conn))
 	privateZone.GET("/users", root)
+
+	privateZone.POST("/post", post.Create(conn))
+	privateZone.PUT("/post", post.Update(conn))
 
 	apiPublic.Logger.Fatal(apiPublic.Start(":" + port))
 }

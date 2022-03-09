@@ -1,6 +1,6 @@
 package conf
 
-import "github.com/dgrijalva/jwt-go"
+import "github.com/golang-jwt/jwt"
 
 type JwtClaims struct {
 	Username string `json:"username"`
