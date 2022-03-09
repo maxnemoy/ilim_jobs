@@ -29,7 +29,7 @@ func Update(conn *pg.DB) func(ctx echo.Context) error {
 				return ctx.JSON(http.StatusBadRequest,
 					struct{ Error string }{err.Error()})
 			}
-			return ctx.JSON(http.StatusUpgradeRequired, struct {
+			return ctx.JSON(http.StatusAccepted, struct {
 				Status string
 			}{Status: "updated"})
 		}
