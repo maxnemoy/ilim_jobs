@@ -8,6 +8,7 @@ import (
 	"github.com/maxnemoy/ilimjob_server/handlers/secureCheck"
 	"github.com/maxnemoy/ilimjob_server/handlers/user"
 	"github.com/maxnemoy/ilimjob_server/handlers/post"
+	"github.com/maxnemoy/ilimjob_server/handlers/vacancy"
 	"net/http"
 	"os"
 
@@ -46,6 +47,8 @@ func main() {
 	apiPublic.PUT("/user", user.CreateUser(conn))
 
 	apiPublic.GET("/posts", post.GetAll(conn))
+
+	apiPublic.GET("/vacancies", vacancy.GetAll(conn))
 	
 
 	privateZone := apiPublic.Group("/v1")
@@ -59,6 +62,9 @@ func main() {
 
 	privateZone.PUT("/post", post.Create(conn))
 	privateZone.PATCH("/post", post.Update(conn))
+
+	privateZone.PUT("/vacancy", vacancy.Create(conn))
+	privateZone.PATCH("/vacancy", vacancy.Update(conn))
 
 	apiPublic.Logger.Fatal(apiPublic.Start(":" + port))
 }
