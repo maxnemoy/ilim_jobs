@@ -1,0 +1,62 @@
+package main
+
+import (
+	"flag"
+	"log"
+	"github.com/maxnemoy/ilimjob_server/db"
+	"github.com/maxnemoy/ilimjob_server/conf"
+	"github.com/maxnemoy/ilimjob_server/handlers/secureCheck"
+	"github.com/maxnemoy/ilimjob_server/handlers/user"
+	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+)
+
+func main() {
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = *flag.String("port", "6001", "server port")
+	}
+
+	err := godotenv.Load("./.env")
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	flag.Parse()
+	conn := db.Connect()
+	apiPublic := echo.New()
+
+	apiPublic.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
+
+	apiPublic.Use(middleware.Logger())
+	apiPublic.Use(middleware.Recover())
+
+	// Routes
+	apiPublic.GET("/", root)
+	apiPublic.POST("/user", user.AuthUser(conn))
+	apiPublic.PUT("/user", user.CreateUser(conn))
+	
+
+	privateZone := apiPublic.Group("/v1")
+	conf := middleware.JWTConfig{
+		Claims:     &conf.JwtClaims{},
+		SigningKey: []byte(os.Getenv("JWT")),
+	}
+	privateZone.Use(middleware.JWTWithConfig(conf))
+	privateZone.GET("/secure", securecheck.SecureCheck(conn))
+	privateZone.GET("/users", root)
+
+	apiPublic.Logger.Fatal(apiPublic.Start(":" + port))
+}
+
+func root(c echo.Context) error {
+	return c.String(http.StatusOK, "ilim_jobs")
+}
