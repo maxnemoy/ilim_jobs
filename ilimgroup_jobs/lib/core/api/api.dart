@@ -19,10 +19,10 @@ abstract class ApiClient {
   factory ApiClient() {
     Dio dio = Dio();
     dio.options = BaseOptions(baseUrl: serverBaseUrl);
-    dio.interceptors.add(InterceptorsWrapper(
-        onError: (DioError dioError, ErrorInterceptorHandler handler) {
-          debugPrint(dioError.response!.data["Error"]);
-    }));
+    // dio.interceptors.add(InterceptorsWrapper(
+    //     onError: (DioError dioError, ErrorInterceptorHandler handler) {
+    //       debugPrint(dioError.response!.data["Error"]);
+    // }));
     return _ApiClient(dio);
   }
   ///[USER]
