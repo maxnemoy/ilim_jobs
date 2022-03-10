@@ -1,6 +1,8 @@
 # ilimgroup_jobs
 
-A new Flutter project.
+## Rebuild models
+
+`flutter pub run build_runner build --delete-conflicting-outputs`
 
 ## Getting Started
 
