@@ -9,6 +9,7 @@ import (
 	"github.com/maxnemoy/ilimjob_server/handlers/user"
 	"github.com/maxnemoy/ilimjob_server/handlers/post"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy"
+	"github.com/maxnemoy/ilimjob_server/handlers/tag"
 	"net/http"
 	"os"
 
@@ -49,6 +50,8 @@ func main() {
 	apiPublic.GET("/posts", post.GetAll(conn))
 
 	apiPublic.GET("/vacancies", vacancy.GetAll(conn))
+
+	apiPublic.GET("/tags", tag.GetAll(conn))
 	
 
 	privateZone := apiPublic.Group("/v1")
@@ -65,6 +68,9 @@ func main() {
 
 	privateZone.PUT("/vacancy", vacancy.Create(conn))
 	privateZone.PATCH("/vacancy", vacancy.Update(conn))
+
+	privateZone.PUT("/tag", tag.Create(conn))
+	privateZone.PATCH("/tag", tag.Update(conn))
 
 	apiPublic.Logger.Fatal(apiPublic.Start(":" + port))
 }
