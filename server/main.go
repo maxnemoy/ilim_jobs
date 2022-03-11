@@ -12,6 +12,7 @@ import (
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/tag"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/category"
+	"github.com/maxnemoy/ilimjob_server/handlers/importer"
 	"net/http"
 	"os"
 
@@ -46,6 +47,7 @@ func main() {
 
 	// Routes
 	apiPublic.GET("/", root)
+	apiPublic.POST("/import", importer.Import(conn))
 	apiPublic.POST("/user", user.AuthUser(conn))
 	apiPublic.PUT("/user", user.CreateUser(conn))
 

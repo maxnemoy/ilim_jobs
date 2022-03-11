@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ilimgroup_jobs/components/style_data.dart';
+import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
 import 'package:routemaster/routemaster.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,31 +15,38 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final tabState = TabPage.of(context);
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      bottomNavigationBar: MediaQuery.of(context).size.width < 800
-          ? _MobileNavBar(tabState: tabState)
-          : null,
-      body: Row(
-        children: [
-          if (MediaQuery.of(context).size.width >= 800)
-            _DesktopNavBar(tabState: tabState),
-          Expanded(
-            child: TabBarView(
-              controller: tabState.controller,
-              children: [
-                for (final stack in tabState.stacks)
-                  PageStackNavigator(stack: stack),
-              ],
+    return BlocListener<DataBloc, DataState>(
+      listener: (BuildContext context, state) {
+        if (state is DataInitialState) {
+          context.read<DataBloc>().add(LoadDataEvent());
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        bottomNavigationBar: MediaQuery.of(context).size.width < 800
+            ? _MobileNavBar(tabState: tabState)
+            : null,
+        body: Row(
+          children: [
+            if (MediaQuery.of(context).size.width >= 800)
+              _DesktopNavBar(tabState: tabState),
+            Expanded(
+              child: TabBarView(
+                controller: tabState.controller,
+                children: [
+                  for (final stack in tabState.stacks)
+                    PageStackNavigator(stack: stack),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class PageData{
+class PageData {
   final String title;
   final String path;
   final IconData icon;
@@ -47,7 +56,8 @@ class PageData{
 
 List<PageData> pages = [
   PageData(title: "Главная", path: "/home", icon: Icons.dashboard),
-  PageData(title: "Стажировка", path: "/internship", icon: Icons.business_sharp),
+  PageData(
+      title: "Стажировка", path: "/internship", icon: Icons.business_sharp),
   PageData(title: "Профиль", path: "/profile", icon: Icons.person),
 ];
 
@@ -69,13 +79,18 @@ class _DesktopNavBar extends StatelessWidget {
           padding: EdgeInsets.all(20.0),
           child: FlutterLogo(),
         ),
-        destinations: List.generate(pages.length, (index) => NavigationRailDestination(
+        destinations: List.generate(
+          pages.length,
+          (index) => NavigationRailDestination(
               icon: Center(
                   child: DecoratedBox(
-                decoration: tabState.controller.index == index ? StyleData.iconBoxDecoration(context) : const BoxDecoration(),
+                decoration: tabState.controller.index == index
+                    ? StyleData.iconBoxDecoration(context)
+                    : const BoxDecoration(),
                 child: Icon(pages[index].icon),
               )),
-              label: Text(pages[index].title)),),
+              label: Text(pages[index].title)),
+        ),
         selectedIndex: tabState.controller.index);
   }
 }
@@ -94,20 +109,20 @@ class _MobileNavBar extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.background,
         onTap: (value) => tabState.controller.index = value,
         currentIndex: tabState.controller.index,
-        showSelectedLabels: false,   // <-- HERE
+        showSelectedLabels: false, // <-- HERE
         showUnselectedLabels: false,
-        items: pages.map((e) => BottomNavigationBarItem(
-              icon: Icon(e.icon),
-              label: '',
-              tooltip: e.title,
-              activeIcon: Container(
-                decoration: StyleData.iconBoxDecoration(context),
-                child: Icon(
-                  e.icon,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ))).toList()
-        
-        );
+        items: pages
+            .map((e) => BottomNavigationBarItem(
+                icon: Icon(e.icon),
+                label: '',
+                tooltip: e.title,
+                activeIcon: Container(
+                  decoration: StyleData.iconBoxDecoration(context),
+                  child: Icon(
+                    e.icon,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                )))
+            .toList());
   }
 }

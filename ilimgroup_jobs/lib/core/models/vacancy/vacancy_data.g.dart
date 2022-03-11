@@ -25,6 +25,9 @@ VacancyData _$VacancyDataFromJson(Map<String, dynamic> json) => VacancyData(
       author: json['author'] as int?,
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
       category: json['category'] as int,
+      contacts: (json['contacts'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$VacancyDataToJson(VacancyData instance) =>
@@ -41,4 +44,5 @@ Map<String, dynamic> _$VacancyDataToJson(VacancyData instance) =>
       'author': instance.author,
       'tags': instance.tags,
       'category': instance.category,
+      'contacts': instance.contacts,
     };

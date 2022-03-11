@@ -16,8 +16,9 @@ type Vacancy struct {
 	Responsibilities string    `pg:"responsibilities" json:"responsibilities"`
 	Requirements     string    `pg:"requirements" json:"requirements"`
 	Terms            string    `pg:"terms" json:"terms"`
-	Author           int    `pg:"author" json:"author"`
-	Tags             []int      `pg:"tags,array" json:"tags"`
+	Author           int       `pg:"author" json:"author"`
+	Contacts         []string    `pg:"contacts" json:"contacts"`
+	Tags             []int     `pg:"tags,array" json:"tags"`
 	Category         int       `pg:"category" json:"category"`
 }
 
@@ -38,6 +39,7 @@ func (v *Vacancy) Upgrade(conn *pg.DB) error {
 		Set("requirements = ?0", v.Requirements).
 		Set("terms = ?0", v.Terms).
 		Set("author = ?0", v.Author).
+		Set("contacts = ?0", pg.Array(v.Contacts)).
 		Set("tags = ?0", pg.Array(v.Tags)).
 		Set("category = ?0", v.Category).
 		Set("upgrade_at = ?0", v.UpgradeAt).

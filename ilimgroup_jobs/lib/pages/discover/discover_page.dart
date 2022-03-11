@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ilimgroup_jobs/components/selected_item.dart';
 import 'package:ilimgroup_jobs/components/vacancy_card.dart';
+import 'package:ilimgroup_jobs/config/singleton.dart';
+import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
+import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
+import 'package:ilimgroup_jobs/core/logic/utils/utils.dart';
 import 'package:ilimgroup_jobs/data/example_data.dart';
 import 'package:routemaster/routemaster.dart';
 
 class DiscoverPage extends StatelessWidget {
-  const DiscoverPage({ Key? key }) : super(key: key);
+  const DiscoverPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,22 +31,31 @@ class DiscoverPage extends StatelessWidget {
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 28, vertical: 5),
-              child: _ZoneTitle(text: "Рекомендации",),
+              child: _ZoneTitle(
+                text: "Рекомендации",
+              ),
             ),
             const SizedBox(
               height: 16,
             ),
             SizedBox(
               height: 200,
-              child: _RecomendationListView(key: ValueKey("recomandationListView"),),
+              child: _RecommendationListView(
+                key: const ValueKey("recommendationListView"),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 28),
-              child: _ZoneTitle(text: "Новые", onShowAllClick: (){print("showAll new vacancies");},),
+              child: _ZoneTitle(
+                text: "Новые",
+                onShowAllClick: () {
+                  print("showAll new vacancies");
+                },
+              ),
             ),
             const SizedBox(height: 16),
             const Padding(
-              padding:  EdgeInsets.symmetric(horizontal: 28),
+              padding: EdgeInsets.symmetric(horizontal: 28),
               child: _VacanciesList(),
             )
           ],
@@ -58,64 +72,82 @@ class _VacanciesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  GridView.builder(
-          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent:450,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 15,
-              mainAxisExtent: 250),
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          padding: const EdgeInsets.only(top: 16.0),
-          itemCount: exampleVacancies.length,
-          itemBuilder: (context, index) =>VacancyCard(
-          tag: "vacancyDetail$index",
-          onTap: (){
-            Routemaster.of(context).push("/vacancy/$index");
-          },
-          title: exampleVacancies[index].title,
-          gradientStartColor: Color(0xffFC67A7),
-          gradientEndColor: Color(0xffF6815B),
-        ));
+    return BlocBuilder<DataBloc, DataState>(
+      builder: (context, state) {
+        if (state is DataInitialState) {
+          context.read<DataBloc>().add(LoadDataEvent());
+        }
+        if (state is DataIsLoadingState) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (state is DataLoadedState) {
+          return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 450,
+                  mainAxisSpacing: 5,
+                  crossAxisSpacing: 15,
+                  mainAxisExtent: 250),
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              padding: const EdgeInsets.only(top: 16.0),
+              itemCount: getIt<DataRepository>().vacancies.length,
+              itemBuilder: (context, index) => VacancyCard(
+                    tag: "vacancyDetail$index",
+                    onTap: () {
+                      Routemaster.of(context).push("/vacancy/$index");
+                    },
+                    title: getIt<DataRepository>().vacancies[index].title,
+                    gradientStartColor: Color(0xffFC67A7),
+                    gradientEndColor: Color(0xffF6815B),
+                  ));
+        }
+        return Container();
+      },
+    );
   }
 }
 
-class _RecomendationListView extends StatelessWidget {
-  _RecomendationListView({
-    Key? key,
-    ScrollController? scrollController
-  }) : scrollController = scrollController ?? ScrollController(), super(key: key);
+class _RecommendationListView extends StatelessWidget {
+  _RecommendationListView({Key? key, ScrollController? scrollController})
+      : scrollController = scrollController ?? ScrollController(),
+        super(key: key);
 
   final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
-    return Scrollbar(
-      controller: scrollController,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 20),
-        child: ListView.separated(
+    return BlocBuilder<DataBloc, DataState>(builder: (context, state) {
+      if (state is DataLoadedState) {
+        return Scrollbar(
           controller: scrollController,
-          physics: const BouncingScrollPhysics(),
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          itemCount: exampleVacancies.length,
-          itemBuilder: (context, index){
-             if(exampleVacancies[index].isRecommended){
-              return VacancyCard(
-                isRecommended: true,
-              tag: "vacancyRecommendedDetail$index",
-              onTap: (){Routemaster.of(context).push('/vacancy/$index?rec=true');},
-              title: exampleVacancies[index].title,
-              subtitle: exampleVacancies[index].catecory.title,
-            );
-            }
-            return Container();
-          },
-          separatorBuilder: (context, index)=>const SizedBox(width: 20),
-        ),
-      ),
-    );
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: ListView.separated(
+              controller: scrollController,
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: getIt<DataRepository>().vacancies.length,
+              itemBuilder: (context, index) {
+                  return VacancyCard(
+                    isRecommended: true,
+                    tag: "vacancyRecommendedDetail$index",
+                    onTap: () {
+                      Routemaster.of(context).push('/vacancy/$index?rec=true');
+                    },
+                    title:  getIt<DataRepository>().vacancies[index].title,
+                    subtitle: getCategoryNameById(getIt<DataRepository>().vacancies[index].category),
+                  );
+              },
+              separatorBuilder: (context, index) => const SizedBox(width: 20),
+            ),
+          ),
+        );
+      }
+      return Container();
+    });
   }
 }
 
@@ -133,54 +165,51 @@ class _DiscoveryHeader extends StatelessWidget {
           children: [
             InkWell(
               borderRadius: BorderRadius.circular(360),
-              onTap: (){
+              onTap: () {
                 Scaffold.of(context).openDrawer();
               },
               child: const SizedBox(
                 height: 35,
                 width: 35,
-                child: Center(
-                  child: Icon(Icons.menu)
-                ),
+                child: Center(child: Icon(Icons.menu)),
               ),
             ),
             InkWell(
               borderRadius: BorderRadius.circular(360),
-              onTap: (){print("search");},
+              onTap: () {
+                print("search");
+              },
               child: const SizedBox(
                 height: 35,
                 width: 35,
-                child: Center(
-                  child: Icon(Icons.search)
-                ),
+                child: Center(child: Icon(Icons.search)),
               ),
             ),
           ],
         ),
-        SizedBox(height: 20,),
+        SizedBox(
+          height: 20,
+        ),
         Row(
-              children: [
-                Expanded(
-                  child: Text("Найди работу своей мечты",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.onBackground,
-                          fontSize: 34,
-                          fontWeight: FontWeight.bold)),
-                ),
-              ],
+          children: [
+            Expanded(
+              child: Text("Найди работу своей мечты",
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onBackground,
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold)),
             ),
+          ],
+        ),
       ],
     );
   }
 }
 
 class _ZoneTitle extends StatelessWidget {
-  const _ZoneTitle({
-    Key? key,
-    required this.text,
-    this.showAllText,
-    this.onShowAllClick
-  }) :  super(key: key);
+  const _ZoneTitle(
+      {Key? key, required this.text, this.showAllText, this.onShowAllClick})
+      : super(key: key);
 
   final String text;
   final String? showAllText;
@@ -198,35 +227,42 @@ class _ZoneTitle extends StatelessWidget {
               fontWeight: FontWeight.w500,
               fontSize: 14),
         ),
-        if(onShowAllClick != null)
-        TextButton(onPressed: ()=>onShowAllClick!(), child: Text(showAllText ?? "Все"))
+        if (onShowAllClick != null)
+          TextButton(
+              onPressed: () => onShowAllClick!(),
+              child: Text(showAllText ?? "Все"))
       ],
     );
   }
 }
 
 class _CategoriesView extends StatelessWidget {
-  _CategoriesView({
-    Key? key,
-    ScrollController? controller
-  }) : controller = controller ?? ScrollController(), super(key: key);
+  _CategoriesView({Key? key, ScrollController? controller})
+      : controller = controller ?? ScrollController(),
+        super(key: key);
 
-  final ScrollController controller ;
+  final ScrollController controller;
 
   @override
   Widget build(BuildContext context) {
-    return Scrollbar(
-      controller: controller,
-      child: ListView(
-        controller: controller,
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 28),
-        children: exampleVacancyCategories.map((e) => SelectedItem(
-            text: e.title,
-            onPressed: (value) => print(value),
-          )).toList()
-      ),
-    );
+    return BlocBuilder<DataBloc, DataState>(builder: (context, state) {
+      if (state is DataLoadedState) {
+        return Scrollbar(
+          controller: controller,
+          child: ListView(
+              controller: controller,
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              children: getIt<DataRepository>().categories
+                  .map((e) => SelectedItem(
+                        text: e.category,
+                        onPressed: (value) => context.read<DataBloc>().add(SelectVacancyCategory(e.id!)),
+                      ))
+                  .toList()),
+        );
+      }
+      return Container();
+    });
   }
 }
