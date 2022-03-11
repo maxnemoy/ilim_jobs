@@ -17,6 +17,10 @@ class DataRepository {
   List<VacancyTagData>? _vacancyTags;
   List<VacancyData>? _vacancyData;
 
+  List<VacancyCategoryData> get categories => _vacancyCategories ?? [];
+  List<VacancyTagData> get tags => _vacancyTags ?? [];
+  List<VacancyData> get vacancies => _vacancyData ?? [];
+
   Future<void> importData() async {
     String token = getIt<AuthenticationRepository>().auth?.token ?? "";
 
@@ -37,7 +41,6 @@ class DataRepository {
               requirements: vacancy.requirements,
               terms: vacancy.terms,
               tags: [],
-              
               category: _vacancyCategories!
                       .firstWhere(
                         (element) => element.category
@@ -46,9 +49,9 @@ class DataRepository {
                         orElse: () =>
                             VacancyCategoryData(category: "", description: ""),
                       )
-                      .id ?? 0,
-              contacts: vacancy.contacts
-                      ),
+                      .id ??
+                  0,
+              contacts: vacancy.contacts),
           token);
     }
     await updateVacancies();
@@ -62,5 +65,15 @@ class DataRepository {
 
   FutureOr<void> updateVacancies() async {
     _vacancyData = await _client.getAllVacancies();
+  }
+
+  FutureOr<void> updateTags() async {
+    _vacancyTags = await _client.getAllVacancyTags();
+  }
+
+  FutureOr<void> loadData() async {
+    await updateCategories();
+    await updateVacancies();
+    await updateTags();
   }
 }

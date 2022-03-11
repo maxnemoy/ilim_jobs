@@ -7,5 +7,8 @@ abstract class DataState extends Equatable {
   List<Object> get props => [];
 }
 
+class DataInitialState extends DataState {}
 
-class DataInitial extends DataState{}
+class DataIsLoadingState extends DataState {}
+
+class DataLoadedState extends DataState {}
