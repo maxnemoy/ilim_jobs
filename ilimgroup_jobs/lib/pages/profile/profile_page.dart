@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/cubit.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
+import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
 import 'package:routemaster/routemaster.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -23,7 +24,12 @@ class ProfilePage extends StatelessWidget {
             onPressed: () {
               context.read<AuthenticationCubit>().logout();
             },
-            child: Text("Logout"))
+            child: const Text("Logout")),
+        ElevatedButton(
+            onPressed: () {
+              context.read<DataBloc>().add(ImportDataEvent());
+            },
+            child: const Text("Import")),
       ]),
     );
   }

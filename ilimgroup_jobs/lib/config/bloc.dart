@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/cubit.dart';
+import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
 
 
 class BlocWrapper extends StatelessWidget {
@@ -13,6 +14,7 @@ class BlocWrapper extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AuthenticationCubit()),
+        BlocProvider(create: (_) => DataBloc()),
       ],
       child: child!,
     );

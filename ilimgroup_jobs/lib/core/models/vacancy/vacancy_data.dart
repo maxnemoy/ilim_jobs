@@ -19,6 +19,7 @@ class VacancyData {
   final int? author;
   final List<String> tags;
   final int category;
+  final List<String>? contacts;
 
   factory VacancyData.fromJson(Map<String, dynamic> json) =>
       _$VacancyDataFromJson(json);
@@ -35,6 +36,7 @@ class VacancyData {
       required this.terms,
       this.author,
       required this.tags,
-      required this.category});
+      required this.category,
+      this.contacts});
   Map<String, dynamic> toJson() => _$VacancyDataToJson(this);
 }

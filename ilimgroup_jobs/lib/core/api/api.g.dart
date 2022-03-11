@@ -271,7 +271,8 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
-    final _data = category;
+    final _data = <String, dynamic>{};
+    _data.addAll(category.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<RespData>(
             Options(method: 'PUT', headers: _headers, extra: _extra)
@@ -288,7 +289,8 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
-    final _data = category;
+    final _data = <String, dynamic>{};
+    _data.addAll(category.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<RespData>(
             Options(method: 'PATCH', headers: _headers, extra: _extra)
