@@ -13,9 +13,12 @@ class DataBloc extends Bloc<DataEvent, DataState> {
   DataBloc() : super(DataInitialState()) {
     on<ImportDataEvent>(_onGetPlaces);
     on<LoadDataEvent>(_onLoadData);
+    on<SelectVacancyCategory>(_onCategorySelect);
   }
 
   final DataRepository _repository = getIt<DataRepository>();
+
+  final List<int> _selectedCategory = [];
 
   FutureOr<void> _onGetPlaces(
       ImportDataEvent event, Emitter<DataState> emitter) async {
@@ -23,9 +26,17 @@ class DataBloc extends Bloc<DataEvent, DataState> {
   }
 
   FutureOr<void> _onLoadData(
-    LoadDataEvent event, Emitter<DataState> emitter) async {
+      LoadDataEvent event, Emitter<DataState> emitter) async {
     emitter(DataIsLoadingState());
     await _repository.loadData();
+    emitter(DataLoadedState());
+  }
+
+  FutureOr<void> _onCategorySelect(
+      SelectVacancyCategory event, Emitter<DataState> emitter) async {
+    emitter(DataIsLoadingState());
+    _selectedCategory.add(event.id);
+    await _repository.sortByCategory(_selectedCategory);
     emitter(DataLoadedState());
   }
 }

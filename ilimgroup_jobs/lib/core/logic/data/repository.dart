@@ -17,9 +17,14 @@ class DataRepository {
   List<VacancyTagData>? _vacancyTags;
   List<VacancyData>? _vacancyData;
 
+  List<VacancyData>? _vacancyDataSorted;
+
   List<VacancyCategoryData> get categories => _vacancyCategories ?? [];
   List<VacancyTagData> get tags => _vacancyTags ?? [];
-  List<VacancyData> get vacancies => _vacancyData ?? [];
+  List<VacancyData> get vacancies =>
+      _vacancyDataSorted != null 
+          ? _vacancyDataSorted!
+          : _vacancyData ?? [];
 
   Future<void> importData() async {
     String token = getIt<AuthenticationRepository>().auth?.token ?? "";
@@ -75,5 +80,13 @@ class DataRepository {
     await updateCategories();
     await updateVacancies();
     await updateTags();
+  }
+
+  FutureOr<void> sortByCategory(List<int> cats) async {
+    _vacancyDataSorted = [];
+    for (int id in cats) {
+      _vacancyDataSorted!.addAll(
+          _vacancyData?.where((element) => element.category == id) ?? []);
+    }
   }
 }

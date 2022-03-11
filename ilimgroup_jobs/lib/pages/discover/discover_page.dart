@@ -257,7 +257,7 @@ class _CategoriesView extends StatelessWidget {
               children: getIt<DataRepository>().categories
                   .map((e) => SelectedItem(
                         text: e.category,
-                        onPressed: (value) => print(value),
+                        onPressed: (value) => context.read<DataBloc>().add(SelectVacancyCategory(e.id!)),
                       ))
                   .toList()),
         );

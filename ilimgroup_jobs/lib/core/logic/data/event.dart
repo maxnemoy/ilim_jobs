@@ -10,3 +10,9 @@ abstract class DataEvent extends Equatable {
 class ImportDataEvent extends DataEvent {}
 
 class LoadDataEvent extends DataEvent {}
+
+class SelectVacancyCategory extends DataEvent {
+  final int id;
+
+  const SelectVacancyCategory(this.id);
+}
