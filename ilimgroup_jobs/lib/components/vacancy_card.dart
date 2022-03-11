@@ -93,7 +93,7 @@ class _VacancyCardState extends State<VacancyCard> {
                                   color: Colors.transparent,
                                   child: AutoSizeText(
                                     widget.title!,
-                                    maxLines: widget.isRecommended ? 3 : 5,
+                                    maxLines: widget.isRecommended ? 2 : 5,
                                     style: const TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold,

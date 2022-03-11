@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
+import 'package:ilimgroup_jobs/core/logic/utils/utils.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_category_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
 import 'package:ilimgroup_jobs/data/example_data.dart';
@@ -27,7 +28,6 @@ class _DetailPageState extends State<VacanciesViewer> {
     super.initState();
   }
 
-  String getCategory(int index)=>getIt<DataRepository>().categories.firstWhere((element) => element.id == index, orElse: ()=>VacancyCategoryData(category: "Без категории", description: "")).category;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class _DetailPageState extends State<VacanciesViewer> {
                   Padding(
                     padding: const EdgeInsets.only(left: 28),
                     child: Text(
-                      getCategory(data.category),
+                      getCategoryNameById(data.category),
                       style: TextStyle(
                           color: Color(0xffffffff).withOpacity(0.7),
                           fontWeight: FontWeight.w400,
