@@ -14,12 +14,18 @@ def main():
 
     soup = BeautifulSoup(page.text, "html.parser")
 
+    categories = [
+        a.text.strip()
+        for a in soup.find_all("a", class_="career_specializations_list sub-nav__link")
+    ]
+
     all_jobs = soup.find_all("article", class_="news-card-mini")
 
     jobs = [parse_job(job) for job in all_jobs]
 
+    model = {"categories": categories, "vacancies": jobs}
     with open("jobs.json", "w") as file:
-        json.dump(jobs, file)
+        json.dump(model, file)
 
 
 def parse_job(job):
@@ -31,8 +37,7 @@ def parse_job(job):
 
     href = job.find("a", class_="news-card-mini__title")["href"]
 
-    job_obj["description"] = parse_description(href)
-
+    job_obj.update(parse_description(href))
     return job_obj
 
 
@@ -43,20 +48,60 @@ def parse_description(href):
 
     soap = BeautifulSoup(page.text, "html.parser")
 
+    title = soap.find("h2", class_="article__title").text
+    print(f'Parse page: "{title}"')
+
     elems = soap.find("div", class_="article__content")
 
-    description = ""
-
+    responsibilities = ""
     elems = elems.find_next("h4")
-    while elems is not None:
-        description += f"##{elems.text}\n"
+    if elems.text.lower() != "обязанности":
+        raise ValueError(elems.text.lower())
+    ul = elems.find_next("ul")
+    for li in ul:
+        if isinstance(li, bs4.Tag):
+            responsibilities += f"- {li.text.strip()}\n"
+
+    responsibilities = responsibilities.replace("<br>", "")
+
+    requirements = ""
+    elems = elems.find_next("h4")
+    if elems.text.lower() != "требования":
+        raise ValueError(elems.text.lower())
+    ul = elems.find_next("ul")
+    for li in ul:
+        if isinstance(li, bs4.Tag):
+            requirements += f"- {li.text.strip()}\n"
+
+    requirements = requirements.replace("<br>", "")
+
+    terms = ""
+    elems = elems.find_next("h4")
+    if elems.text.lower() != "условия":
+        raise ValueError(elems.text.lower())
+    ul = elems.find_next("ul")
+    for li in ul:
+        if isinstance(li, bs4.Tag):
+            terms += f"- {li.text.strip()}\n"
+
+    terms = terms.replace("<br>", "")
+
+    contacts = []
+    elems = elems.find_next("h4")
+    if elems is not None:
+        if elems.text.lower() != "контактная информация":
+            raise ValueError(elems.text.lower())
         ul = elems.find_next("ul")
         for li in ul:
             if isinstance(li, bs4.Tag):
-                description += f"* {li.text}\n"
-        elems = elems.find_next("h4")
+                contacts.append(li.text.strip())
 
-    return description
+    return {
+        "responsibilities": responsibilities,
+        "requirements": requirements,
+        "terms": terms,
+        "contacts": contacts,
+    }
 
 
 main()
