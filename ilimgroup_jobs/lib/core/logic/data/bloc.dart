@@ -18,8 +18,6 @@ class DataBloc extends Bloc<DataEvent, DataState> {
 
   final DataRepository _repository = getIt<DataRepository>();
 
-  final List<int> _selectedCategory = [];
-
   FutureOr<void> _onGetPlaces(
       ImportDataEvent event, Emitter<DataState> emitter) async {
     _repository.importData();
@@ -35,8 +33,8 @@ class DataBloc extends Bloc<DataEvent, DataState> {
   FutureOr<void> _onCategorySelect(
       SelectVacancyCategory event, Emitter<DataState> emitter) async {
     emitter(DataIsLoadingState());
-    _selectedCategory.add(event.id);
-    await _repository.sortByCategory(_selectedCategory);
+    _repository.selectCategory(event.id);
+    await _repository.sortByCategory(_repository.selectedCategory);
     emitter(DataLoadedState());
   }
 }

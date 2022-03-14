@@ -6,7 +6,6 @@ import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/utils.dart';
-import 'package:ilimgroup_jobs/data/example_data.dart';
 import 'package:routemaster/routemaster.dart';
 
 class DiscoverPage extends StatelessWidget {
@@ -15,51 +14,92 @@ class DiscoverPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      drawer: Drawer(),
-      body: SafeArea(
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 28, right: 18, top: 36),
-              child: _DiscoveryHeader(),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        drawer: const Drawer(),
+        body: BlocBuilder<DataBloc, DataState>(builder: (context, state) {
+          if (state is DataInitialState) {
+            context.read<DataBloc>().add(LoadDataEvent());
+          }
+          return SafeArea(
+            child: ListView(
+              physics: const BouncingScrollPhysics(),
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 28, right: 18, top: 36),
+                  child: _DiscoveryHeader(),
+                ),
+                SizedBox(
+                  height: 100,
+                  child: _CategoriesView(),
+                ),
+                if (getIt<DataRepository>().vacancies.isNotEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 28, vertical: 5),
+                    child: _ZoneTitle(
+                      text: "Рекомендации",
+                    ),
+                  ),
+                const SizedBox(
+                  height: 16,
+                ),
+                if (getIt<DataRepository>().vacancies.isNotEmpty)
+                  SizedBox(
+                    height: 200,
+                    child: _RecommendationListView(
+                      key: const ValueKey("recommendationListView"),
+                    ),
+                  ),
+                if (getIt<DataRepository>().vacancies.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 28),
+                    child: _ZoneTitle(
+                      text: "Новые",
+                      onShowAllClick: () {
+                        print("showAll new vacancies");
+                      },
+                    ),
+                  ),
+                const SizedBox(height: 16),
+                if (getIt<DataRepository>().vacancies.isNotEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 28),
+                    child: _VacanciesList(),
+                  ),
+                if (getIt<DataRepository>().vacancies.isEmpty)
+                  const _ElementsNotFound()
+              ],
             ),
-            SizedBox(
-              height: 100,
-              child: _CategoriesView(),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 28, vertical: 5),
-              child: _ZoneTitle(
-                text: "Рекомендации",
-              ),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            SizedBox(
-              height: 200,
-              child: _RecommendationListView(
-                key: const ValueKey("recommendationListView"),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 28),
-              child: _ZoneTitle(
-                text: "Новые",
-                onShowAllClick: () {
-                  print("showAll new vacancies");
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 28),
-              child: _VacanciesList(),
-            )
-          ],
-        ),
+          );
+        }));
+  }
+}
+
+class _ElementsNotFound extends StatelessWidget {
+  final String text;
+  final IconData icon;
+  const _ElementsNotFound(
+      {Key? key,
+      this.text = "Нет элементов в данной категории",
+      this.icon = Icons.search_off_rounded})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 50,
+            color: Colors.white.withAlpha(50),
+          ),
+          Text(
+            text,
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
+        ],
       ),
     );
   }
@@ -74,9 +114,6 @@ class _VacanciesList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DataBloc, DataState>(
       builder: (context, state) {
-        if (state is DataInitialState) {
-          context.read<DataBloc>().add(LoadDataEvent());
-        }
         if (state is DataIsLoadingState) {
           return const Center(
             child: CircularProgressIndicator(),
@@ -131,15 +168,16 @@ class _RecommendationListView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               itemCount: getIt<DataRepository>().vacancies.length,
               itemBuilder: (context, index) {
-                  return VacancyCard(
-                    isRecommended: true,
-                    tag: "vacancyRecommendedDetail$index",
-                    onTap: () {
-                      Routemaster.of(context).push('/vacancy/$index?rec=true');
-                    },
-                    title:  getIt<DataRepository>().vacancies[index].title,
-                    subtitle: getCategoryNameById(getIt<DataRepository>().vacancies[index].category),
-                  );
+                return VacancyCard(
+                  isRecommended: true,
+                  tag: "vacancyRecommendedDetail$index",
+                  onTap: () {
+                    Routemaster.of(context).push('/vacancy/$index?rec=true');
+                  },
+                  title: getIt<DataRepository>().vacancies[index].title,
+                  subtitle: getCategoryNameById(
+                      getIt<DataRepository>().vacancies[index].category),
+                );
               },
               separatorBuilder: (context, index) => const SizedBox(width: 20),
             ),
@@ -246,6 +284,10 @@ class _CategoriesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DataBloc, DataState>(builder: (context, state) {
+      if (state is DataIsLoadingState) {
+        print("!");
+        return const LinearProgressIndicator();
+      }
       if (state is DataLoadedState) {
         return Scrollbar(
           controller: controller,
@@ -254,10 +296,13 @@ class _CategoriesView extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 28),
-              children: getIt<DataRepository>().categories
+              children: getIt<DataRepository>()
+                  .categories
                   .map((e) => SelectedItem(
-                        text: e.category,
-                        onPressed: (value) => context.read<DataBloc>().add(SelectVacancyCategory(e.id!)),
+                        category: e,
+                        onPressed: (value) => context
+                            .read<DataBloc>()
+                            .add(SelectVacancyCategory(e.id!)),
                       ))
                   .toList()),
         );

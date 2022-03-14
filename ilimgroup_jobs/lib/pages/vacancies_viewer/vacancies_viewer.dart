@@ -67,10 +67,7 @@ class _DetailPageState extends State<VacanciesViewer> {
                     padding: const EdgeInsets.only(left: 28),
                     child: Text(
                       getCategoryNameById(data.category),
-                      style: TextStyle(
-                          color: Color(0xffffffff).withOpacity(0.7),
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16),
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ),
                   SizedBox(height: 25),

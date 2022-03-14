@@ -52,6 +52,9 @@ class MyApp extends StatelessWidget {
           onPrimary: Colors.white, 
           onSecondary: Colors.white, 
           onSurface: Color(0xff515979), 
+          ),
+          textTheme: TextTheme(
+            bodyText2: TextStyle(color: const Color(0xffffffff).withOpacity(0.7)),
           )),
         routerDelegate: RoutemasterDelegate(routesBuilder: (_) => routes),
         routeInformationParser: const RoutemasterParser(),),

@@ -22,9 +22,11 @@ class DataRepository {
   List<VacancyCategoryData> get categories => _vacancyCategories ?? [];
   List<VacancyTagData> get tags => _vacancyTags ?? [];
   List<VacancyData> get vacancies =>
-      _vacancyDataSorted != null 
-          ? _vacancyDataSorted!
-          : _vacancyData ?? [];
+      _vacancyDataSorted != null ? _vacancyDataSorted! : _vacancyData ?? [];
+
+  final List<int> _selectedCategory = [];
+
+  List<int> get selectedCategory => _selectedCategory;
 
   Future<void> importData() async {
     String token = getIt<AuthenticationRepository>().auth?.token ?? "";
@@ -87,6 +89,21 @@ class DataRepository {
     for (int id in cats) {
       _vacancyDataSorted!.addAll(
           _vacancyData?.where((element) => element.category == id) ?? []);
+    }
+    if (cats.isEmpty) {
+      _vacancyDataSorted = _vacancyData;
+    }
+  }
+
+  int checkSelectedCategoryItem(int item) =>
+      _selectedCategory.indexWhere((element) => element == item);
+
+  void selectCategory(int id) {
+    int index = _selectedCategory.indexWhere((element) => element == id);
+    if (index > -1) {
+      _selectedCategory.removeAt(index);
+    } else {
+      _selectedCategory.add(id);
     }
   }
 }
