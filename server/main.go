@@ -2,17 +2,18 @@ package main
 
 import (
 	"flag"
-	"log"
-	"github.com/maxnemoy/ilimjob_server/db"
 	"github.com/maxnemoy/ilimjob_server/conf"
-	"github.com/maxnemoy/ilimjob_server/handlers/secureCheck"
-	"github.com/maxnemoy/ilimjob_server/handlers/user"
+	"github.com/maxnemoy/ilimjob_server/db"
+	"github.com/maxnemoy/ilimjob_server/handlers/importer"
 	"github.com/maxnemoy/ilimjob_server/handlers/post"
 	"github.com/maxnemoy/ilimjob_server/handlers/post/postType"
+	"github.com/maxnemoy/ilimjob_server/handlers/secureCheck"
+	"github.com/maxnemoy/ilimjob_server/handlers/upload"
+	"github.com/maxnemoy/ilimjob_server/handlers/user"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy"
-	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/tag"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/category"
-	"github.com/maxnemoy/ilimjob_server/handlers/importer"
+	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/tag"
+	"log"
 	"net/http"
 	"os"
 
@@ -41,12 +42,18 @@ func main() {
 	apiPublic.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
+	
+	apiPublic.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root:   "./static",
+		Browse: true,
+	}))
 
 	apiPublic.Use(middleware.Logger())
 	apiPublic.Use(middleware.Recover())
 
 	// Routes
 	apiPublic.GET("/", root)
+	apiPublic.Static("/static", "./static/")
 	apiPublic.POST("/import", importer.Import(conn))
 	apiPublic.POST("/user", user.AuthUser(conn))
 	apiPublic.PUT("/user", user.CreateUser(conn))
@@ -57,7 +64,6 @@ func main() {
 	apiPublic.GET("/vacancies", vacancy.GetAll(conn))
 	apiPublic.GET("/vacancy/tags", tag.GetAll(conn))
 	apiPublic.GET("/vacancy/categories", category.GetAll(conn))
-	
 
 	privateZone := apiPublic.Group("/v1")
 	conf := middleware.JWTConfig{
@@ -80,6 +86,7 @@ func main() {
 	privateZone.PUT("/vacancy/category", category.Create(conn))
 	privateZone.PATCH("/vacancy/category", category.Update(conn))
 
+	privateZone.POST("/upload", upload.Upload(conn))
 	apiPublic.Logger.Fatal(apiPublic.Start(":" + port))
 }
 
