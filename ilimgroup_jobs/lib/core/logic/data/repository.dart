@@ -114,4 +114,12 @@ class DataRepository {
     _selectedTags.clear();
     _selectedTags.addAll(id);
   }
+
+  FutureOr<void> createVacancy(VacancyData data, String token) async {
+    await _client.createVacancy(data, token);
+  }
+
+  FutureOr<void> upgradeVacancy(VacancyData data, String token) async {
+    await _client.updateVacancy(data, token);
+  }
 }

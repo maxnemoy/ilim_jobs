@@ -21,5 +21,11 @@ class SelectVacancyTag extends DataEvent {
   final List<int> id;
 
   const SelectVacancyTag(this.id);
+}
 
+class SaveVacancyEvent extends DataEvent {
+  final VacancyData data;
+  final String token;
+
+  const SaveVacancyEvent(this.data, this.token);
 }
