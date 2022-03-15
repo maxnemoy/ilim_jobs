@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
-import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/utils.dart';
-import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_category_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
-import 'package:ilimgroup_jobs/data/example_data.dart';
 import 'package:routemaster/routemaster.dart';
 
 class VacanciesViewer extends StatefulWidget {
