@@ -25,8 +25,10 @@ class DataRepository {
       _vacancyDataSorted != null ? _vacancyDataSorted! : _vacancyData ?? [];
 
   final List<int> _selectedCategory = [];
+  final List<int> _selectedTags = [];
 
   List<int> get selectedCategory => _selectedCategory;
+  List<int> get selectedTags => _selectedTags;
 
   Future<void> importData() async {
     String token = getIt<AuthenticationRepository>().auth?.token ?? "";
@@ -44,6 +46,7 @@ class DataRepository {
           VacancyData(
               published: true,
               title: vacancy.title,
+              description: vacancy.description,
               responsibilities: vacancy.responsibilities,
               requirements: vacancy.requirements,
               terms: vacancy.terms,
@@ -105,5 +108,10 @@ class DataRepository {
     } else {
       _selectedCategory.add(id);
     }
+  }
+
+  void selectTag(List<int> id) {
+    _selectedTags.clear();
+    _selectedTags.addAll(id);
   }
 }

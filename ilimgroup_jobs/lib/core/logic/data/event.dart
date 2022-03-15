@@ -16,3 +16,10 @@ class SelectVacancyCategory extends DataEvent {
 
   const SelectVacancyCategory(this.id);
 }
+
+class SelectVacancyTag extends DataEvent {
+  final List<int> id;
+
+  const SelectVacancyTag(this.id);
+
+}
