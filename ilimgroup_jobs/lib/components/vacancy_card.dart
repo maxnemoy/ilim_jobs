@@ -62,14 +62,14 @@ class _VacancyCardState extends State<VacancyCard> {
                 borderRadius: BorderRadius.circular(26),
                 gradient: LinearGradient(
                   colors: [
-                    widget.gradientStartColor ?? Color(0xff441DFC),
-                    widget.gradientEndColor ?? Color(0xff4E81EB),
+                    widget.gradientStartColor ?? const Color(0xff441DFC),
+                    widget.gradientEndColor ?? const Color(0xff4E81EB),
                   ],
                   begin: Alignment.bottomLeft,
                   end: Alignment.topRight,
                 ),
               ),
-              child: Container(
+              child: SizedBox(
                 height: 176,
                 width: 305,
                 child: Stack(
