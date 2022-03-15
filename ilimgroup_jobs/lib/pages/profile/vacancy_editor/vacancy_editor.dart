@@ -5,6 +5,7 @@ import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
+import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:routemaster/routemaster.dart';
 
 // ignore: must_be_immutable
@@ -75,61 +76,11 @@ class _VacancyEditorState extends State<VacancyEditor> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Switch(
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        value: data?.published ?? false,
-                        onChanged: (v) => setState(() {
-                              data = data?.copyWith(published: v);
-                            })),
-                    DropdownButton<int>(
-                        focusColor: Theme.of(context).colorScheme.background,
-                        dropdownColor: Theme.of(context).colorScheme.background,
-                        value: data?.category,
-                        items: getIt<DataRepository>()
-                            .categories
-                            .map((e) => DropdownMenuItem(
-                                  value: e.id,
-                                  child: Text(e.category),
-                                ))
-                            .toList(),
-                        onChanged: (e) {
-                          // widget.data.category = e;
-                          setState(() {
-                            data = data?.copyWith(category: e);
-                          });
-                        }),
-                    Wrap(
-                        children: getIt<DataRepository>()
-                            .tags
-                            .map((e) => Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: ChoiceChip(
-                                    backgroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .background,
-                                    selectedColor:
-                                        Theme.of(context).colorScheme.primary,
-                                    onSelected: (element) {
-                                      int index = data?.tags.indexWhere(
-                                              (element) => element == e.id) ??
-                                          -1;
-                                      if (index > -1) {
-                                        data?.tags.removeAt(index);
-                                      } else {
-                                        data?.tags.add(e.id!);
-                                      }
-                                      setState(() {});
-                                    },
-                                    label: Text(e.tag),
-                                    selected: data!.tags
-                                            .indexWhere((el) => el == e.id) >
-                                        -1,
-                                  ),
-                                ))
-                            .toList()),
-                    TextField(
+                    const ZoneTitle(text: 'Общие сведения',),
+                     TextField(
                       controller: _titleController,
                       decoration:
                           const InputDecoration(label: Text("Название")),
@@ -142,6 +93,78 @@ class _VacancyEditorState extends State<VacancyEditor> {
                       maxLines: null,
                       onChanged: (v) => data = data?.copyWith(description: v),
                     ),
+                    const SizedBox(height: 20,),         
+                    const ZoneTitle(text: 'Тип вакансии',),
+                    Row(
+                      children: [
+                        const Text("Категория "),
+                        const Spacer(),
+                        DropdownButton<int>(
+                            underline: Container(width: double.infinity, height: 0.5, color: Theme.of(context).colorScheme.onBackground,),
+                            focusColor: Theme.of(context).colorScheme.background,
+                            dropdownColor: Theme.of(context).colorScheme.background,
+                            value: data?.category,
+                            items: getIt<DataRepository>()
+                                .categories
+                                .map((e) => DropdownMenuItem(
+                                      value: e.id,
+                                      child: Text(e.category),
+                                    ))
+                                .toList(),
+                            onChanged: (e) {
+                              // widget.data.category = e;
+                              setState(() {
+                                data = data?.copyWith(category: e);
+                              });
+                            }),
+                      ],
+                    ),
+                    const SizedBox(height: 20,), 
+                    Row(
+                      children: [
+                        const Text("Формат работы "),
+                        const SizedBox(width: 20,),
+                        Expanded(
+                          child: Wrap(
+                            alignment: WrapAlignment.center,
+                              children: getIt<DataRepository>()
+                                  .tags
+                                  .map((e) => Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: ChoiceChip(
+                                          shape: RoundedRectangleBorder(
+                                            side: BorderSide(color: Theme.of(context).colorScheme.onBackground, width: 0.5),
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .background,
+                                              
+                                          selectedColor:
+                                              Theme.of(context).colorScheme.primary,
+                                          onSelected: (element) {
+                                            int index = data?.tags.indexWhere(
+                                                    (element) => element == e.id) ??
+                                                -1;
+                                            if (index > -1) {
+                                              data?.tags.removeAt(index);
+                                            } else {
+                                              data?.tags.add(e.id!);
+                                            }
+                                            setState(() {});
+                                          },
+                                          label: Text(e.tag),
+                                          selected: data!.tags
+                                                  .indexWhere((el) => el == e.id) >
+                                              -1,
+                                        ),
+                                      ))
+                                  .toList()),
+                        ),
+                      ],
+                    ),
+                   const SizedBox(height: 20,), 
+                    const ZoneTitle(text: 'Детальная информация',),
                     TextField(
                       controller: _responsibilitiesController,
                       decoration:
@@ -170,13 +193,31 @@ class _VacancyEditorState extends State<VacancyEditor> {
                       maxLines: null,
                       onChanged: (v) => data = data?.copyWith(contacts: [v]),
                     ),
+
+                    Row(
+                      children: [
+                        const Text("Опубликовать при сохранении"),
+                        const Spacer(),
+                        Switch(
+                            activeColor: Theme.of(context).colorScheme.primary,
+                            value: data?.published ?? false,
+                            onChanged: (v) => setState(() {
+                                  data = data?.copyWith(published: v);
+                                })),
+                      ],
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(40.0),
-                      child: ElevatedButton(
-                          onPressed: () {
-                            context.read<DataBloc>().add(SaveVacancyEvent(data!, getIt<AuthenticationRepository>().auth?.token ?? ""));
-                          },
-                          child: const Text("Сохранить")),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                              onPressed: () {
+                                context.read<DataBloc>().add(SaveVacancyEvent(data!, getIt<AuthenticationRepository>().auth?.token ?? ""));
+                              },
+                              child: const Text("Сохранить")),
+                        ],
+                      ),
                     )
                   ],
                 ),

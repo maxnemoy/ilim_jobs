@@ -35,7 +35,7 @@ class DiscoverPage extends StatelessWidget {
                 if (getIt<DataRepository>().vacancies.isNotEmpty)
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 28, vertical: 5),
-                    child: _ZoneTitle(
+                    child: ZoneTitle(
                       text: "Рекомендации",
                     ),
                   ),
@@ -52,7 +52,7 @@ class DiscoverPage extends StatelessWidget {
                 if (getIt<DataRepository>().vacancies.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(left: 28),
-                    child: _ZoneTitle(
+                    child: ZoneTitle(
                       text: "Новые",
                       onShowAllClick: () {
                         print("showAll new vacancies");
@@ -244,8 +244,8 @@ class _DiscoveryHeader extends StatelessWidget {
   }
 }
 
-class _ZoneTitle extends StatelessWidget {
-  const _ZoneTitle(
+class ZoneTitle extends StatelessWidget {
+  const ZoneTitle(
       {Key? key, required this.text, this.showAllText, this.onShowAllClick})
       : super(key: key);
 
