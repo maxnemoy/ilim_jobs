@@ -26,23 +26,39 @@ class AuthPage extends StatelessWidget {
           }
         },
         child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
-          builder: (context, state) => Column(
-            children: [
-              TextField(
-                controller: _username,
+          builder: (context, state) => Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.people_sharp, size: 100, color: Theme.of(context).colorScheme.onBackground,),
+                    Text("Войдите, чтобы продолжить", style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onBackground),),
+                    const SizedBox(height: 40,),
+                    TextField(
+                      controller: _username,
+                      decoration: const InputDecoration(label: Text("Имя пользователя"), prefixIcon: Icon(Icons.person)),
+                    ),
+                    TextField(
+                      obscureText: true,
+                      controller: _password,
+                      decoration: const InputDecoration(label: Text("Пароль"), prefixIcon: Icon(Icons.lock)),
+                    ),
+                    if (state is AuthenticationLoading)
+                      const LinearProgressIndicator(),
+                    const SizedBox(height: 40,),
+                    ElevatedButton(
+                        onPressed: () {
+                          context.read<AuthenticationCubit>().login(UserData(
+                              username: _username.text, password: _password.text));
+                        },
+                        child: const Text("Войти"))
+                  ],
+                ),
               ),
-              TextField(
-                controller: _password,
-              ),
-              if (state is AuthenticationLoading)
-                const LinearProgressIndicator(),
-              ElevatedButton(
-                  onPressed: () {
-                    context.read<AuthenticationCubit>().login(UserData(
-                        username: _username.text, password: _password.text));
-                  },
-                  child: const Text("Войти"))
-            ],
+            ),
           ),
         ));
   }
