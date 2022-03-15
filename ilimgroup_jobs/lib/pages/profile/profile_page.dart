@@ -30,6 +30,11 @@ class ProfilePage extends StatelessWidget {
               context.read<DataBloc>().add(ImportDataEvent());
             },
             child: const Text("Import")),
+        ElevatedButton(
+            onPressed: () {
+              Routemaster.of(context).push("/profile/vacancyEditor");
+            },
+            child: const Text("Add vacancy")),
       ]),
     );
   }
