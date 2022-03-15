@@ -4,6 +4,7 @@ import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
+import 'package:ilimgroup_jobs/core/logic/utils/tag2icon.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
 import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:routemaster/routemaster.dart';
@@ -132,6 +133,7 @@ class _VacancyEditorState extends State<VacancyEditor> {
                                   .map((e) => Padding(
                                         padding: const EdgeInsets.all(5.0),
                                         child: ChoiceChip(
+                                          avatar: Icon(tag2icon(e.id ?? -1)),
                                           shape: RoundedRectangleBorder(
                                             side: BorderSide(color: Theme.of(context).colorScheme.onBackground, width: 0.5),
                                             borderRadius: BorderRadius.circular(10),

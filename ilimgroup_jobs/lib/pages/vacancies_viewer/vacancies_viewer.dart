@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
+import 'package:ilimgroup_jobs/core/logic/utils/tag2icon.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/utils.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
+import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_tag_data.dart';
 import 'package:routemaster/routemaster.dart';
 
 class VacanciesViewer extends StatefulWidget {
@@ -24,7 +26,6 @@ class _DetailPageState extends State<VacanciesViewer> {
     data = getIt<DataRepository>().vacancies[int.parse(widget.index)];
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +68,7 @@ class _DetailPageState extends State<VacanciesViewer> {
                       style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ),
-                  SizedBox(height: 25),
+                  const SizedBox(height: 25),
                   // SizedBox(
                   //   height: 279,
                   //   child: ListView(
@@ -105,15 +106,27 @@ class _DetailPageState extends State<VacanciesViewer> {
                   //   ),
                   // ),
                   const SizedBox(height: 32),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 28),
-                    child: _TagsBar(),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 28),
+                    child: _TagsBar(data: data.tags,),
                   ),
                   const SizedBox(height: 46),
-                  VacancyDetailPart(title: "Обязанности", data: data.responsibilities,),
-                  VacancyDetailPart(title: "Требования", data: data.requirements,),
-                  VacancyDetailPart(title: "Условия", data: data.terms,),
-                  VacancyDetailPart(title: "Контактная информация", data: data.contacts?[0] ?? "",),
+                  VacancyDetailPart(
+                    title: "Обязанности",
+                    data: data.responsibilities,
+                  ),
+                  VacancyDetailPart(
+                    title: "Требования",
+                    data: data.requirements,
+                  ),
+                  VacancyDetailPart(
+                    title: "Условия",
+                    data: data.terms,
+                  ),
+                  VacancyDetailPart(
+                    title: "Контактная информация",
+                    data: data.contacts?[0] ?? "",
+                  ),
                 ],
               ),
               Align(
@@ -143,7 +156,8 @@ class _DetailPageState extends State<VacanciesViewer> {
 class VacancyDetailPart extends StatelessWidget {
   final String title;
   final String data;
-  const VacancyDetailPart({Key? key, required this.title, required this.data}) : super(key: key);
+  const VacancyDetailPart({Key? key, required this.title, required this.data})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +167,10 @@ class VacancyDetailPart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(title, style: Theme.of(context).textTheme.titleLarge,),
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           Text(
             data,
             style: TextStyle(
@@ -168,34 +185,30 @@ class VacancyDetailPart extends StatelessWidget {
 }
 
 class _TagsBar extends StatelessWidget {
+  final List<int> data;
   const _TagsBar({
     Key? key,
+    required this.data
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
-        Container(
-          height: 56,
-          width: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white.withOpacity(0.1),
-          ),
-          child: Center(child: Icon(Icons.telegram)),
+      children: data.map((e) => Padding(
+        padding: const EdgeInsets.only(right: 20),
+        child: Tooltip(
+          message: getIt<DataRepository>().tags.firstWhere((element) => element.id == e).tag,
+          child: Container(
+              height: 56,
+              width: 56,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white.withOpacity(0.1),
+              ),
+              child: Center(child: Icon(tag2icon(e))),
+            ),
         ),
-        SizedBox(width: 16),
-        Container(
-          height: 56,
-          width: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white.withOpacity(0.1),
-          ),
-          child: Center(child: Icon(Icons.r_mobiledata)),
-        ),
-      ],
+      ),).toList()
     );
   }
 }

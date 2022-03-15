@@ -1,6 +1,14 @@
 import 'package:ilimgroup_jobs/data/tmp_import_data/tmp_category.dart';
 
-TmpData tmpData = TmpData(categories: [
+TmpData tmpData = TmpData(
+  tags: [
+    "Первая работа",
+    "Удаленно",
+    "Полный рабочий день",
+    "Частичная занятость",
+    "Работа вахтовым методом"
+  ],
+  categories: [
   "PR",
   "Административный персонал",
   "Аудит",

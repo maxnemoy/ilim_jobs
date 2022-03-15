@@ -1,10 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:ilimgroup_jobs/components/style_data.dart';
+import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
+import 'package:ilimgroup_jobs/core/logic/utils/tag2icon.dart';
+import 'package:ilimgroup_jobs/core/logic/utils/utils.dart';
+import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
+
+import '../config/singleton.dart';
 
 class VacancyCard extends StatefulWidget {
-  final String? title;
-  final String? subtitle;
+  final VacancyData data;
   final Color? gradientStartColor;
   final Color? gradientEndColor;
   final double? height;
@@ -16,8 +21,7 @@ class VacancyCard extends StatefulWidget {
   final bool isRecommended;
   const VacancyCard(
       {Key? key,
-      this.title,
-      this.subtitle,
+      required this.data,
       this.gradientStartColor,
       this.gradientEndColor,
       this.height,
@@ -38,13 +42,15 @@ class _VacancyCardState extends State<VacancyCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: isHover? 0: 5),
+      padding: EdgeInsets.symmetric(vertical: isHover ? 0 : 5),
       child: DecoratedBox(
-        decoration: isHover ? StyleData.iconBoxDecoration(context) : const BoxDecoration(),
+        decoration: isHover
+            ? StyleData.iconBoxDecoration(context)
+            : const BoxDecoration(),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            onHover: (v){
+            onHover: (v) {
               setState(() {
                 isHover = v;
               });
@@ -79,7 +85,8 @@ class _VacancyCardState extends State<VacancyCard> {
                     //       child: Icon(Icons.security_update_good),
                     //     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 24, top: 24, bottom: 24, right: 5),
+                      padding: const EdgeInsets.only(
+                          left: 24, top: 24, bottom: 24, right: 5),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -92,7 +99,7 @@ class _VacancyCardState extends State<VacancyCard> {
                                 child: Material(
                                   color: Colors.transparent,
                                   child: AutoSizeText(
-                                    widget.title!,
+                                    widget.data.title,
                                     maxLines: widget.isRecommended ? 2 : 5,
                                     style: const TextStyle(
                                         fontSize: 22,
@@ -104,23 +111,14 @@ class _VacancyCardState extends State<VacancyCard> {
                               const SizedBox(
                                 height: 5,
                               ),
-                              widget.subtitle != null
-                                  ? Text(
-                                      widget.subtitle!,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w300,
-                                          color: Colors.white),
-                                    )
-                                  : Container(),
+                              Text(getCategoryNameById(widget.data.category).toUpperCase(), style: Theme.of(context).textTheme.caption,)
                             ],
                           ),
                           Row(
-                            children: [
-                              Icon(Icons.select_all_rounded),
-                              SizedBox(width: 24),
-                              Icon(Icons.sell)
-                            ],
+                            children: widget.data.tags.map((e) => Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: Tooltip(message: getIt<DataRepository>().tags.firstWhere((element) => element.id == e).tag, child: Icon(tag2icon(e))),
+                            )).toList(),
                           )
                         ],
                       ),

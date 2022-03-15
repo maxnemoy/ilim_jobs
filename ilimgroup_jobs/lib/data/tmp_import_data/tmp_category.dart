@@ -21,16 +21,18 @@ class TmpVacancy {
       required this.responsibilities,
       required this.requirements,
       required this.terms,
-      required this.contacts});
+      required this.contacts,});
   Map<String, dynamic> toJson() => _$TmpVacancyToJson(this);
 }
 
 @JsonSerializable()
 class TmpData {
   final List<String> categories;
+  final List<String> tags;
   final List<TmpVacancy> vacancies;
 
   TmpData({
+      required this.tags, 
       required this.categories, 
       required this.vacancies});
 

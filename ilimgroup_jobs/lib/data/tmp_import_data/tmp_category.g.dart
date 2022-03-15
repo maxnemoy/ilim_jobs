@@ -27,6 +27,7 @@ Map<String, dynamic> _$TmpVacancyToJson(TmpVacancy instance) =>
     };
 
 TmpData _$TmpDataFromJson(Map<String, dynamic> json) => TmpData(
+      tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
       categories: (json['categories'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
@@ -37,5 +38,6 @@ TmpData _$TmpDataFromJson(Map<String, dynamic> json) => TmpData(
 
 Map<String, dynamic> _$TmpDataToJson(TmpData instance) => <String, dynamic>{
       'categories': instance.categories,
+      'tags': instance.tags,
       'vacancies': instance.vacancies,
     };

@@ -135,7 +135,7 @@ class _VacanciesList extends StatelessWidget {
                     onTap: () {
                       Routemaster.of(context).push("/vacancy/$index");
                     },
-                    title: getIt<DataRepository>().vacancies[index].title,
+                    data: getIt<DataRepository>().vacancies[index],
                     gradientStartColor: Color(0xffFC67A7),
                     gradientEndColor: Color(0xffF6815B),
                   ));
@@ -174,9 +174,7 @@ class _RecommendationListView extends StatelessWidget {
                   onTap: () {
                     Routemaster.of(context).push('/vacancy/$index?rec=true');
                   },
-                  title: getIt<DataRepository>().vacancies[index].title,
-                  subtitle: getCategoryNameById(
-                      getIt<DataRepository>().vacancies[index].category),
+                  data: getIt<DataRepository>().vacancies[index],
                 );
               },
               separatorBuilder: (context, index) => const SizedBox(width: 20),
