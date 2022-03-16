@@ -49,25 +49,9 @@ class _ProfilePageState extends State<ProfilePage> {
             child: const Text("Add vacancy")),
         ElevatedButton(
             onPressed: () async {
-              FilePickerResult? result = await FilePicker.platform.pickFiles();
-              if (result != null) {
-                setState(() {
-                  extension = result.files.single.extension;
-                  file = File(result.files.single.path!);
-                });
-              }
+              Routemaster.of(context).push("/internship/manage");
             },
-            child: const Text("Choose file")),
-        if (file != null)
-          ElevatedButton(
-              onPressed: () async {
-                ApiClient client = ApiClient();
-
-                RespData data = await client.uploadFile(file!, ".$extension",
-                    getIt<AuthenticationRepository>().auth?.token ?? "");
-                print(data.path);
-              },
-              child: const Text("UploadFile"))
+            child: const Text("post manage"))
       ]),
     );
   }

@@ -130,4 +130,12 @@ class DataRepository {
   FutureOr<void> upgradeVacancy(VacancyData data, String token) async {
     await _client.updateVacancy(data, token);
   }
+
+  FutureOr<void> createPost(PostData data, String token) async {
+    await _client.createPost(data, token);
+  }
+
+  FutureOr<void> upgradePost(PostData data, String token) async {
+    await _client.updatePost(data, token);
+  }
 }

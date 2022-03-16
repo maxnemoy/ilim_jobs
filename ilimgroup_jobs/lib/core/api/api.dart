@@ -1,4 +1,4 @@
-import 'dart:io' if (dart.library.js) 'dart:html';
+import 'dart:io' if (kIsWeb) 'dart:html';
 
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter/foundation.dart';

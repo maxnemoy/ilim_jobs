@@ -29,3 +29,11 @@ class SaveVacancyEvent extends DataEvent {
 
   const SaveVacancyEvent(this.data, this.token);
 }
+
+
+class SavePostEvent extends DataEvent {
+  final PostData data;
+  final String token;
+
+  const SavePostEvent(this.data, this.token);
+}

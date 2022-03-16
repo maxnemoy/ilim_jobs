@@ -30,6 +30,26 @@ class PostData {
       required this.assets,
       required this.type});
 
+  PostData copyWith({
+    bool? published,
+    String? title,
+    String? body,
+    String? cover,
+    List<String>? assets,
+    int? type,
+  }) =>
+      PostData(
+          id: id,
+          createAt: createAt,
+          upgradeAt: upgradeAt,
+          deleteAt: deleteAt,
+          published: published ?? this.published,
+          title: title ?? this.title,
+          body: body ?? this.body,
+          cover: cover ?? this.cover,
+          assets: assets ?? this.assets,
+          type: type ?? this.type);
+
   factory PostData.fromJson(Map<String, dynamic> json) =>
       _$PostDataFromJson(json);
   Map<String, dynamic> toJson() => _$PostDataToJson(this);

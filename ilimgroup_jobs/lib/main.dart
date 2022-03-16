@@ -6,6 +6,8 @@ import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:ilimgroup_jobs/pages/home_page.dart';
 import 'package:ilimgroup_jobs/pages/internship/internship.dart';
 import 'package:ilimgroup_jobs/pages/not_found/not_found.dart';
+import 'package:ilimgroup_jobs/pages/post/post_manage.dart';
+import 'package:ilimgroup_jobs/pages/post/post_viewer.dart';
 import 'package:ilimgroup_jobs/pages/profile/profile_page.dart';
 import 'package:ilimgroup_jobs/pages/profile/vacancy_editor/vacancy_editor.dart';
 import 'package:ilimgroup_jobs/pages/vacancies_viewer/vacancies_viewer.dart';
@@ -26,6 +28,8 @@ final routes = RouteMap(
         ),
     '/home': (_)=> const MaterialPage(child: DiscoverPage()),
     '/internship': (_)=> const MaterialPage(child: InternshipPage()),
+    '/internship/post/:id': (info)=> MaterialPage(child: PostViewer(index: info.pathParameters["id"] ?? "0")),
+    '/internship/manage': (_)=> const MaterialPage(child: PostManager()),
     '/profile': (_)=> getIt<AuthenticationRepository>().auth != null ? const MaterialPage(child: ProfilePage()) : const MaterialPage(child: AuthPage()),
     // TODO: check roles
     '/profile/vacancyEditor': (_)=> getIt<AuthenticationRepository>().auth != null ? MaterialPage(child: VacancyEditor()) : const MaterialPage(child: AuthPage()),
