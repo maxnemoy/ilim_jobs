@@ -13,6 +13,9 @@ import (
 func Upload(conn *pg.DB) func(ctx echo.Context) error {
 	return func(ctx echo.Context) error {
 
+		extension := ctx.FormValue("extension")
+
+
 		file, err := ctx.FormFile("file")
 		if err != nil {
 			print(err.Error())
@@ -27,7 +30,7 @@ func Upload(conn *pg.DB) func(ctx echo.Context) error {
 		var errors error
 		uuid := uuid.Must(uuid.NewV4(), errors).String()
 		
-		dst, err := os.Create("./static/" + uuid +  ".png")
+		dst, err := os.Create("./static/" + uuid + extension)
 		if err != nil {
 			print("path")
 			return err
@@ -40,6 +43,6 @@ func Upload(conn *pg.DB) func(ctx echo.Context) error {
 	
 		return ctx.JSON(http.StatusOK, struct {
 			Path string
-		}{Path: (os.Getenv("BASE_URL") + "/static/" + uuid + ".png")})
+		}{Path: (os.Getenv("BASE_URL") + "/static/" + uuid + extension)})
 	}
 }

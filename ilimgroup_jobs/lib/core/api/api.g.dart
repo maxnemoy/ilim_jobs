@@ -321,7 +321,7 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<RespData> uploadFile(file, token) async {
+  Future<RespData> uploadFile(file, extension, token) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': token};
@@ -331,6 +331,7 @@ class _ApiClient implements ApiClient {
         'file',
         MultipartFile.fromFileSync(file.path,
             filename: file.path.split(Platform.pathSeparator).last)));
+    _data.fields.add(MapEntry('extension', extension));
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<RespData>(Options(
                 method: 'POST',

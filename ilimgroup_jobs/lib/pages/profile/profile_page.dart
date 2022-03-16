@@ -20,6 +20,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   File? file;
+  String? extension;
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthenticationCubit, AuthenticationState>(
@@ -51,6 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
               FilePickerResult? result = await FilePicker.platform.pickFiles();
               if (result != null) {
                 setState(() {
+                  extension = result.files.single.extension;
                   file = File(result.files.single.path!);
                 });
               }
@@ -60,8 +62,9 @@ class _ProfilePageState extends State<ProfilePage> {
           ElevatedButton(
               onPressed: () async {
                 ApiClient client = ApiClient();
-                RespData data = await client.uploadFile(
-                    file!, getIt<AuthenticationRepository>().auth?.token ?? "");
+
+                RespData data = await client.uploadFile(file!, ".$extension",
+                    getIt<AuthenticationRepository>().auth?.token ?? "");
                 print(data.path);
               },
               child: const Text("UploadFile"))
