@@ -1,7 +1,4 @@
-import 'dart:io' if (kIsWeb) 'dart:html';
-
 import 'package:dio/dio.dart' hide Headers;
-import 'package:flutter/foundation.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_type_data.dart';
 import 'package:ilimgroup_jobs/core/models/response_data.dart';
@@ -15,6 +12,7 @@ import 'package:retrofit/retrofit.dart';
 part 'api.g.dart';
 
 String serverBaseUrl = "http://127.0.0.1:6001";
+String uploadPath = "/v1/upload";
 
 @RestApi()
 abstract class ApiClient {
@@ -94,8 +92,4 @@ abstract class ApiClient {
 
   @GET("/vacancy/categories")
   Future<List<VacancyCategoryData>> getAllVacancyCategories();
-
-  @POST("/v1/upload")
-  @MultiPart()
-  Future<RespData> uploadFile(@Part() File file, @Part() String extension, @Header("Authorization") String token);
 }
