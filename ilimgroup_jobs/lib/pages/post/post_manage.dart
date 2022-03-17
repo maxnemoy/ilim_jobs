@@ -55,76 +55,79 @@ class _PostManagerState extends State<PostManager> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          TextField(
-            onChanged: (value) => data = data.copyWith(title: value),
-            decoration: const InputDecoration(hintText: "Заголовок статьи"),
-          ),
-          Expanded(
-            child: TextField(
-              onChanged: (value) => data = data.copyWith(body: value),
-              maxLines: null,
-              decoration: const InputDecoration(
-                  hintText: "Напишите что-нибудь....",
-                  border: InputBorder.none),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            TextField(
+              onChanged: (value) => data = data.copyWith(title: value),
+              decoration: const InputDecoration(hintText: "Заголовок статьи"),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Theme.of(context).colorScheme.onBackground.withAlpha(30),
+            Expanded(
+              child: TextField(
+                onChanged: (value) => data = data.copyWith(body: value),
+                maxLines: null,
+                decoration: const InputDecoration(
+                    hintText: "Напишите что-нибудь....",
+                    border: InputBorder.none),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          const ZoneTitle(text: "Управление вложениями"),
-                          Wrap(
-                            children: data.assets
-                                .map((e) => Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: Image.network(
-                                        e,
-                                        width: 100,
-                                        height: 100,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ))
-                                .toList(),
-                          ),
-                        ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Theme.of(context).colorScheme.onBackground.withAlpha(30),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            const ZoneTitle(text: "Управление вложениями"),
+                            Wrap(
+                              children: data.assets
+                                  .map((e) => Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Image.network(
+                                          e,
+                                          width: 100,
+                                          height: 100,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ))
+                                  .toList(),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    ElevatedButton.icon(
-                        onPressed: () async {
-                          String link = await pickFileAndUpload();
-                          setState(() {
-                            data.assets.add(link);
-                          });
-                        },
-                        icon: const Icon(Icons.upload_file_rounded),
-                        label: const Text("Добавить изображение"))
-                  ],
+                      ElevatedButton.icon(
+                          onPressed: () async {
+                            String link = await pickFileAndUpload(getIt<AuthenticationRepository>().auth?.token ?? "");
+                            setState(() {
+                              data.assets.add(link);
+                            });
+                          },
+                          icon: const Icon(Icons.upload_file_rounded),
+                          label: const Text("Добавить изображение"))
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: ElevatedButton(
-                onPressed: () {
-                  context.read<DataBloc>().add(SavePostEvent(data,
-                      getIt<AuthenticationRepository>().auth?.token ?? ""));
-                },
-                child: const Text("Сохранить")),
-          )
-        ],
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: ElevatedButton(
+                  onPressed: () {
+                    context.read<DataBloc>().add(SavePostEvent(data,
+                        getIt<AuthenticationRepository>().auth?.token ?? ""));
+                  },
+                  child: const Text("Сохранить")),
+            )
+          ],
+        ),
       ),
     );
   }
