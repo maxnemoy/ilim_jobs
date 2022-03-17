@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
@@ -5,6 +7,7 @@ import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:ilimgroup_jobs/pages/post/post_tile.dart';
 import 'package:ilimgroup_jobs/pages/vacancies_viewer/vacancies_viewer.dart';
+import 'package:zefyrka/zefyrka.dart';
 
 class PostViewer extends StatefulWidget {
   const PostViewer({Key? key, required this.index}) : super(key: key);
@@ -92,7 +95,11 @@ class _DetailPageState extends State<PostViewer> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
-                    child: Text(data.body, style: Theme.of(context).textTheme.bodyText2,),
+                    child: ZefyrEditor(
+                      readOnly: true,
+                      showCursor: false,
+                      controller: ZefyrController(NotusDocument.fromJson(jsonDecode(data.body))),
+                    ),//Text(data.body, style: Theme.of(context).textTheme.bodyText2,),
                   ),
                   
                   const SizedBox(height: 20,),

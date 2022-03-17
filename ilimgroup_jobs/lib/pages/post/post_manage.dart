@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
@@ -8,6 +10,7 @@ import 'package:ilimgroup_jobs/core/logic/utils/file_uploader.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:zefyrka/zefyrka.dart';
 
 class PostManager extends StatefulWidget {
   final PostData? data;
@@ -35,6 +38,8 @@ class _PostManagerState extends State<PostManager> {
             type: 1);
     super.initState();
   }
+
+  ZefyrController _controller = ZefyrController();
 
   @override
   Widget build(BuildContext context) {
@@ -64,20 +69,33 @@ class _PostManagerState extends State<PostManager> {
               decoration: const InputDecoration(hintText: "Заголовок статьи"),
             ),
             Expanded(
-              child: TextField(
-                onChanged: (value) => data = data.copyWith(body: value),
-                maxLines: null,
-                decoration: const InputDecoration(
-                    hintText: "Напишите что-нибудь....",
-                    border: InputBorder.none),
+              child: Column(
+                children: [
+                  ZefyrToolbar.basic(controller: _controller),
+                  Expanded(
+                    child: ZefyrEditor(
+                      controller: _controller,
+                    ),
+                  ),
+                ],
               ),
             ),
+            // Expanded(
+            //   child: TextField(
+            //     onChanged: (value) => data = data.copyWith(body: value),
+            //     maxLines: null,
+            //     decoration: const InputDecoration(
+            //         hintText: "Напишите что-нибудь....",
+            //         border: InputBorder.none),
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Theme.of(context).colorScheme.onBackground.withAlpha(30),
+                  color:
+                      Theme.of(context).colorScheme.onBackground.withAlpha(30),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -105,7 +123,9 @@ class _PostManagerState extends State<PostManager> {
                       ),
                       ElevatedButton.icon(
                           onPressed: () async {
-                            String link = await pickFileAndUpload(getIt<AuthenticationRepository>().auth?.token ?? "");
+                            String link = await pickFileAndUpload(
+                                getIt<AuthenticationRepository>().auth?.token ??
+                                    "");
                             setState(() {
                               data.assets.add(link);
                             });
@@ -121,6 +141,7 @@ class _PostManagerState extends State<PostManager> {
               padding: const EdgeInsets.all(20.0),
               child: ElevatedButton(
                   onPressed: () {
+                    data = data.copyWith(body: jsonEncode(_controller.document.toJson()));
                     context.read<DataBloc>().add(SavePostEvent(data,
                         getIt<AuthenticationRepository>().auth?.token ?? ""));
                   },
