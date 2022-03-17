@@ -53,10 +53,13 @@ class _PostTileState extends State<PostTile> {
                       Expanded(
                           child: ClipRRect(
                             borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20)),
-                            child: Image.network(
-                                                  widget.data.assets[0],
-                                                  fit: BoxFit.cover,
-                                                ),
+                            child: SizedBox(
+                              height: 300,
+                              child: Image.network(
+                                                    widget.data.assets[0],
+                                                    fit: BoxFit.cover,
+                                                  ),
+                            ),
                           )),
                     if (widget.data.assets.isNotEmpty)
                     Container(height: double.infinity, width: 1, color: Colors.white,),
