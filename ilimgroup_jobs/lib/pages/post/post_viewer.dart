@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:ilimgroup_jobs/components/page_header.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:ilimgroup_jobs/pages/post/post_tile.dart';
-import 'package:ilimgroup_jobs/pages/vacancies_viewer/vacancies_viewer.dart';
 import 'package:zefyrka/zefyrka.dart';
 
 class PostViewer extends StatefulWidget {
@@ -37,7 +37,7 @@ class _DetailPageState extends State<PostViewer> {
 
   final ScrollController scrollControllerPhotos = ScrollController();
   final ScrollController scrollControllerPosts = ScrollController();
-
+  FocusNode focus = FocusNode();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,20 +85,40 @@ class _DetailPageState extends State<PostViewer> {
                                   padding: const EdgeInsets.only(right: 20),
                                   child: GestureDetector(
                                     onTap: () {
-                                      showDialog(context: context,
-                                      builder:(context)=> AlertDialog(
-                                        content: ConstrainedBox(
-                                          constraints: const BoxConstraints(maxWidth: 600, maxHeight: 400),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                children: [
-                                                IconButton(onPressed: (){Navigator.pop(context);}, icon: const Icon(Icons.close))],),
-                                              Expanded(child: Image.network(e, fit: BoxFit.fitWidth,)),
-                                            ],
-                                          )),
-                                      ));
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                                content: ConstrainedBox(
+                                                    constraints:
+                                                        const BoxConstraints(
+                                                            maxWidth: 600,
+                                                            maxHeight: 400),
+                                                    child: Column(
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .end,
+                                                          children: [
+                                                            IconButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                icon: const Icon(
+                                                                    Icons
+                                                                        .close))
+                                                          ],
+                                                        ),
+                                                        Expanded(
+                                                            child:
+                                                                Image.network(
+                                                          e,
+                                                          fit: BoxFit.fitWidth,
+                                                        )),
+                                                      ],
+                                                    )),
+                                              ));
                                     },
                                     child: Container(
                                       height: 280,
@@ -123,6 +143,7 @@ class _DetailPageState extends State<PostViewer> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 28, vertical: 20),
                     child: ZefyrEditor(
+                      focusNode: null,
                       showSelectionHandles: false,
                       enableInteractiveSelection: false,
                       readOnly: true,
@@ -176,10 +197,16 @@ class _DetailPageState extends State<PostViewer> {
                     alignment: Alignment.topCenter,
                     child: Container(
                       color: Theme.of(context).colorScheme.background,
-                      child: const Padding(
-                        padding: EdgeInsets.only(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
                             left: 22, right: 22, top: 20, bottom: 10),
-                        child: PageHeader(),
+                        child: PageHeader(
+                          actions: [
+                            IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.favorite))
+                          ],
+                        ),
                       ),
                     )),
               // if(!widget.withHeader) const Align(

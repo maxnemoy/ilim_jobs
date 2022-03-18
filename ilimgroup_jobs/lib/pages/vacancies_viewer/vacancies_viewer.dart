@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ilimgroup_jobs/components/page_header.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/tag2icon.dart';
@@ -132,10 +133,12 @@ class _DetailPageState extends State<VacanciesViewer> {
                   alignment: Alignment.topCenter,
                   child: Container(
                     color: Theme.of(context).colorScheme.background,
-                    child: const Padding(
-                      padding: EdgeInsets.only(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
                           left: 22, right: 22, top: 20, bottom: 10),
-                      child: PageHeader(),
+                      child: PageHeader(
+                          actions: [IconButton(onPressed: (){}, icon: const Icon(Icons.favorite))],
+                        ),
                     ),
                   )),
               const Align(
@@ -258,59 +261,6 @@ class _BottomBar extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class PageHeader extends StatelessWidget {
-  const PageHeader({Key? key}) : super(key: key);
-
-  final bool? isHeartIconTapped = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          InkWell(
-            borderRadius: BorderRadius.circular(360),
-            onTap: () {
-              Routemaster.of(context).pop();
-            },
-            child: Container(
-              height: 35,
-              width: 35,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(360),
-              ),
-              child: const Center(
-                child: Icon(Icons.chevron_left),
-              ),
-            ),
-          ),
-          InkWell(
-            borderRadius: BorderRadius.circular(360),
-            onTap: () {},
-            child: Container(
-              height: 35,
-              width: 35,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(360),
-              ),
-              child: Center(
-                child: Icon(
-                  Icons.heart_broken,
-                  color: isHeartIconTapped!
-                      ? Theme.of(context).colorScheme.error
-                      : Theme.of(context).colorScheme.onBackground,
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
