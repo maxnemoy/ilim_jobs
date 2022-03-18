@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ilimgroup_jobs/components/style_data.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
+import 'package:routemaster/routemaster.dart';
 
 class PostTile extends StatefulWidget {
   final PostData data;
@@ -27,10 +28,11 @@ class _PostTileState extends State<PostTile> {
             onHover: (v) {
               setState(() {
                 isHover = v;
-                print(v);
               });
             },
-            //onTap: () => widget.onTap!(),
+            onTap: () {
+              Routemaster.of(context).push("/internship/post/${widget.data.id}");
+            },
             borderRadius: BorderRadius.circular(26),
             child: Ink(
               decoration: BoxDecoration(
@@ -46,26 +48,38 @@ class _PostTileState extends State<PostTile> {
               ),
               child: SizedBox(
                 height: 500,
-                width: 400,
+                width: 300,
                 child: Row(
                   children: [
                     if (widget.data.assets.isNotEmpty)
                       Expanded(
                           child: ClipRRect(
-                            borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), bottomLeft: Radius.circular(20)),
-                            child: SizedBox(
-                              height: 300,
-                              child: Image.network(
-                                                    widget.data.assets[0],
-                                                    fit: BoxFit.cover,
-                                                  ),
-                            ),
-                          )),
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            bottomLeft: Radius.circular(20)),
+                        child: SizedBox(
+                          height: double.infinity,
+                          width: double.infinity,
+                          child: Image.network(
+                            widget.data.assets[0],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )),
                     if (widget.data.assets.isNotEmpty)
-                    Container(height: double.infinity, width: 1, color: Colors.white,),
-                    Expanded(child: Padding(
+                      Container(
+                        height: double.infinity,
+                        width: 1,
+                        color: Colors.white,
+                      ),
+                    Expanded(
+                        child: Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: Text(widget.data.title, overflow: TextOverflow.fade, style: Theme.of(context).textTheme.titleMedium,),
+                      child: Text(
+                        widget.data.title,
+                        overflow: TextOverflow.fade,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
                     ))
                   ],
                 ),
