@@ -9,4 +9,5 @@ Future<void> singletonInit() async {
   getIt.registerSingleton<DataRepository>(DataRepository());
 
   await getIt.allReady();
+  await getIt<DataRepository>().loadData();
 }
