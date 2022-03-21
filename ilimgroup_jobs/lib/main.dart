@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ilimgroup_jobs/config/bloc.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
 import 'package:ilimgroup_jobs/pages/auth/auth_page.dart';
@@ -20,6 +21,7 @@ import 'config/singleton.dart';
 Future<void> main() async {
   await singletonInit();
   runApp(const MyApp());
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 }
 
 final routes = RouteMap(
