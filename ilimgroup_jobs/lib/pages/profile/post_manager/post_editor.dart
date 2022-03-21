@@ -55,7 +55,7 @@ class _PostEditorState extends State<PostEditor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         title: const Text("Управление записью"),
         leading: IconButton(
@@ -150,17 +150,21 @@ class _PostEditorState extends State<PostEditor> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ElevatedButton(
-                  onPressed: () {
-                    data = data.copyWith(
-                        body: jsonEncode(_controller.document.toJson()));
-                    print(data.id);
-                    context.read<DataBloc>().add(SavePostEvent(data,
-                        getIt<AuthenticationRepository>().auth?.token ?? ""));
-                  },
-                  child: const Text("Сохранить")),
+            BlocListener<DataBloc, DataState>(
+              listener: (context, state) {
+                if (state is DataSavedState) Routemaster.of(context).pop();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ElevatedButton(
+                    onPressed: () {
+                      data = data.copyWith(
+                          body: jsonEncode(_controller.document.toJson()));
+                      context.read<DataBloc>().add(SavePostEvent(data,
+                          getIt<AuthenticationRepository>().auth?.token ?? ""));
+                    },
+                    child: const Text("Сохранить")),
+              ),
             )
           ],
         ),

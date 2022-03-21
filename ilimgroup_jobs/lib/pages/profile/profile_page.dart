@@ -60,7 +60,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       padding: const EdgeInsets.all(20.0),
                       child: PopupMenuButton<String>(
                         onSelected: (v) {
-                          print(v);
                         },
                         itemBuilder: (BuildContext context) {
                           return {'Изменить профиль', 'Выйти'}
@@ -91,14 +90,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     leading: const Icon(Icons.person_search_sharp),
                     title: const Text("Управление вакансиями"),
                     onTap: () {
-                      Routemaster.of(context).push("/profile/vacancy_manager");
+                      Routemaster.of(context).push("/vacancy_manager");
                     },
                   ),
                   ListTile(
                     leading: const Icon(Icons.note_alt_rounded),
                     title: const Text("Управление постами"),
                     onTap: () {
-                      Routemaster.of(context).push("/profile/post_manager");
+                      Routemaster.of(context).push("/post_manager");
                     },
                   ),
                 ],

@@ -14,7 +14,6 @@ class AuthenticationRepository {
     try {
       _auth = await _client.authentication(user);
     } catch (_) {
-      print("object");
       return;
     }
   }

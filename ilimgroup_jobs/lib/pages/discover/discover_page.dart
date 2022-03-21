@@ -55,7 +55,6 @@ class DiscoverPage extends StatelessWidget {
                     child: ZoneTitle(
                       text: "Новые",
                       onShowAllClick: () {
-                        print("showAll new vacancies");
                       },
                     ),
                   ),
@@ -216,7 +215,6 @@ class _DiscoveryHeader extends StatelessWidget {
             InkWell(
               borderRadius: BorderRadius.circular(360),
               onTap: () {
-                print("search");
               },
               child: const SizedBox(
                 height: 35,

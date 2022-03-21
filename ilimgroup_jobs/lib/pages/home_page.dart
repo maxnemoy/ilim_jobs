@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ilimgroup_jobs/components/style_data.dart';
-import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
 import 'package:routemaster/routemaster.dart';
 
 class HomePage extends StatefulWidget {
@@ -103,7 +101,7 @@ class _MobileNavBar extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.background,
         onTap: (value) => tabState.controller.index = value,
         currentIndex: tabState.controller.index,
-        showSelectedLabels: false, // <-- HERE
+        showSelectedLabels: false,
         showUnselectedLabels: false,
         items: pages
             .map((e) => BottomNavigationBarItem(

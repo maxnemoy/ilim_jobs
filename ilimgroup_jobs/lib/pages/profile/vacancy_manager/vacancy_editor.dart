@@ -48,7 +48,7 @@ class _VacancyEditorState extends State<VacancyEditor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
           title: const Text("Добавить вакансию"),
           leading: IconButton(
@@ -207,19 +207,24 @@ class _VacancyEditorState extends State<VacancyEditor> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ElevatedButton(
-                              onPressed: () {
-                                data = data.copyWith(
-                                    body: jsonEncode(
-                                        _bodyController.document.toJson()));
-                                context.read<DataBloc>().add(SaveVacancyEvent(
-                                    data,
-                                    getIt<AuthenticationRepository>()
-                                            .auth
-                                            ?.token ??
-                                        ""));
-                              },
-                              child: const Text("Сохранить")),
+                          BlocListener<DataBloc, DataState>(
+                            listener: (context, state) {
+                              if (state is DataSavedState) Routemaster.of(context).pop();
+                            },
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  data = data.copyWith(
+                                      body: jsonEncode(
+                                          _bodyController.document.toJson()));
+                                  context.read<DataBloc>().add(SaveVacancyEvent(
+                                      data,
+                                      getIt<AuthenticationRepository>()
+                                              .auth
+                                              ?.token ??
+                                          ""));
+                                },
+                                child: const Text("Сохранить")),
+                          ),
                         ],
                       ),
                     )

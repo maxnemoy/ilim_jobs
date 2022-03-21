@@ -42,8 +42,6 @@ class DataRepository {
     }
     await updateCategories();
 
-    debugPrint(_vacancyCategories?.length.toString());
-
     // for (TmpVacancy vacancy in tmpData.vacancies) {
     //   await _client.createVacancy(
     //       VacancyData(
@@ -68,8 +66,6 @@ class DataRepository {
     //       token);
     // }
     await updateVacancies();
-
-    debugPrint(_vacancyData?.length.toString());
   }
 
   FutureOr<void> updateCategories() async {

@@ -9,29 +9,32 @@ class VacancyManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        PageHeader(
-          actions: [IconButton(onPressed: () {
-            Routemaster.of(context)
-                            .push("/profile/vacancy_manager/edit/-1");
-          }, icon: const Icon(Icons.add))],
-        ),
-        Expanded(
-          child: ListView(
-            children: getIt<DataRepository>()
-                .vacancies
-                .map((e) => ListTile(
-                      title: Text(e.title),
-                      onTap: () {
-                        Routemaster.of(context)
-                            .push("/profile/vacancy_manager/edit/${e.id}");
-                      },
-                    ))
-                .toList(),
+    return Material(
+      color: Theme.of(context).colorScheme.background,
+      child: Column(
+        children: [
+          PageHeader(
+            actions: [IconButton(onPressed: () {
+              Routemaster.of(context)
+                              .push("/vacancy_manager/edit/-1");
+            }, icon: const Icon(Icons.add))],
           ),
-        )
-      ],
+          Expanded(
+            child: ListView(
+              children: getIt<DataRepository>()
+                  .vacancies
+                  .map((e) => ListTile(
+                        title: Text(e.title),
+                        onTap: () {
+                          Routemaster.of(context)
+                              .push("/vacancy_manager/edit/${e.id}");
+                        },
+                      ))
+                  .toList(),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

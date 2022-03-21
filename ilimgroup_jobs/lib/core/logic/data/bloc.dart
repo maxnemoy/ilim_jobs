@@ -46,7 +46,6 @@ class DataBloc extends Bloc<DataEvent, DataState> {
       SelectVacancyTag event, Emitter<DataState> emitter) async {
     emitter(DataIsLoadingState());
     _repository.selectTag(event.id);
-    print(_repository.selectedTags);
     await _repository.sortByCategory(_repository.selectedCategory);
     emitter(DataLoadedState());
   }
@@ -60,6 +59,7 @@ class DataBloc extends Bloc<DataEvent, DataState> {
       await _repository.createVacancy(event.data, event.token);
     }
     await _repository.loadData();
+    emitter(DataSavedState());
     emitter(DataLoadedState());
   }
 
@@ -72,6 +72,7 @@ class DataBloc extends Bloc<DataEvent, DataState> {
       await _repository.createPost(event.data, event.token);
     }
     await _repository.loadData();
+    emitter(DataSavedState());
     emitter(DataLoadedState());
   }
 }

@@ -25,6 +25,7 @@ Future<void> main() async {
 final routes = RouteMap(
   routes: {
     '/': (_) => const TabPage(
+          //pageBuilder: ,
           child: HomePage(),
           paths: ['/home', '/internship', '/profile'],
         ),
@@ -33,10 +34,10 @@ final routes = RouteMap(
     '/internship/post/:id': (info)=> MaterialPage(child: PostViewer(index: info.pathParameters["id"] ?? "0")),
     '/profile': (_)=> getIt<AuthenticationRepository>().auth != null ? const MaterialPage(child: ProfilePage()) : const MaterialPage(child: AuthPage()),
     // TODO: check roles
-    '/profile/vacancy_manager': (_)=> getIt<AuthenticationRepository>().auth != null ? const MaterialPage(child: VacancyManager()) : const MaterialPage(child: AuthPage()),
-    '/profile/vacancy_manager/edit/:id': (info)=> getIt<AuthenticationRepository>().auth != null ? MaterialPage(child: VacancyEditor(id: info.pathParameters["id"])) : const MaterialPage(child: AuthPage()),
-    '/profile/post_manager': (info)=> getIt<AuthenticationRepository>().auth != null ? const MaterialPage(child: PostManager()) : const MaterialPage(child: AuthPage()),
-    '/profile/post_manager/edit/:id': (info)=> getIt<AuthenticationRepository>().auth != null ? MaterialPage(child: PostEditor(id: info.pathParameters["id"])) : const MaterialPage(child: AuthPage()),
+    '/vacancy_manager': (_)=> getIt<AuthenticationRepository>().auth != null ? const MaterialPage(child: VacancyManager()) : const MaterialPage(child: AuthPage()),
+    '/vacancy_manager/edit/:id': (info)=> getIt<AuthenticationRepository>().auth != null ? MaterialPage(child: VacancyEditor(id: info.pathParameters["id"])) : const MaterialPage(child: AuthPage()),
+    '/post_manager': (info)=> getIt<AuthenticationRepository>().auth != null ? const MaterialPage(child: PostManager()) : const MaterialPage(child: AuthPage()),
+    '/post_manager/edit/:id': (info)=> getIt<AuthenticationRepository>().auth != null ? MaterialPage(child: PostEditor(id: info.pathParameters["id"])) : const MaterialPage(child: AuthPage()),
     '/vacancy/:id': (info) => MaterialPage(child: VacanciesViewer(index: info.pathParameters["id"] ?? "0", recommended: info.queryParameters["rec"]!= null ? info.queryParameters["rec"]!.toLowerCase() == "true" : false,)),
   },
   onUnknownRoute: (route){
