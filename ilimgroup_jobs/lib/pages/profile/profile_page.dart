@@ -77,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   const Align(
                       alignment: Alignment.bottomCenter,
                       child: _UserAvatar(
-                        url: "",
+                        url: "", //TODO: add support users avatar
                       )),
                 ],
               ),
@@ -90,7 +90,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   ListTile(
                     leading: const Icon(Icons.person_search_sharp),
                     title: const Text("Управление вакансиями"),
-                    onTap: () {},
+                    onTap: () {
+                      Routemaster.of(context).push("/profile/vacancy_manager");
+                    },
                   ),
                   ListTile(
                     leading: const Icon(Icons.note_alt_rounded),

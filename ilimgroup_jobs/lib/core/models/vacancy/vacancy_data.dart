@@ -13,14 +13,10 @@ class VacancyData {
   final DateTime? deleteAt;
   final bool published;
   final String title;
-  final String description;
-  final String responsibilities;
-  final String requirements;
-  final String terms;
+  final String body;
   final int? author;
   final List<int> tags;
   final int category;
-  final List<String>? contacts;
 
   factory VacancyData.fromJson(Map<String, dynamic> json) =>
       _$VacancyDataFromJson(json);
@@ -32,14 +28,10 @@ class VacancyData {
       this.deleteAt,
       required this.published,
       required this.title,
-      required this.description,
-      required this.responsibilities,
-      required this.requirements,
-      required this.terms,
+      required this.body,
       this.author,
       required this.tags,
-      required this.category,
-      this.contacts});
+      required this.category});
   Map<String, dynamic> toJson() => _$VacancyDataToJson(this);
 
   VacancyData copyWith(
@@ -49,14 +41,10 @@ class VacancyData {
           DateTime? deleteAt,
           bool? published,
           String? title,
-          String? description,
-          String? responsibilities,
-          String? requirements,
-          String? terms,
+          String? body,
           int? author,
           List<int>? tags,
-          int? category,
-          List<String>? contacts}) =>
+          int? category}) =>
       VacancyData(
           id: id ?? this.id,
           createAt: createAt ?? this.createAt,
@@ -64,12 +52,8 @@ class VacancyData {
           deleteAt: deleteAt ?? this.deleteAt,
           published: published ?? this.published,
           title: title ?? this.title,
-          description: description ?? this.description,
-          responsibilities: responsibilities ?? this.responsibilities,
-          requirements: requirements ?? this.requirements,
-          terms: terms ?? this.terms,
+          body: body ?? this.body,
           author: author ?? this.author,
           tags: tags ?? this.tags,
-          category: category ?? this.category,
-          contacts: contacts ?? this.contacts);
+          category: category ?? this.category);
 }

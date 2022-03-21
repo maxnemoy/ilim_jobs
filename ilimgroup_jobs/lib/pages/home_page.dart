@@ -15,13 +15,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final tabState = TabPage.of(context);
-    return BlocListener<DataBloc, DataState>(
-      listener: (BuildContext context, state) {
-        if (state is DataInitialState) {
-          context.read<DataBloc>().add(LoadDataEvent());
-        }
-      },
-      child: Scaffold(
+    return  Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         bottomNavigationBar: MediaQuery.of(context).size.width < 800
             ? _MobileNavBar(tabState: tabState)
@@ -41,7 +35,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-      ),
+      
     );
   }
 }

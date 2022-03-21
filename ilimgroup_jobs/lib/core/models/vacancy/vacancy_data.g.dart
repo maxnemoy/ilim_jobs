@@ -19,16 +19,10 @@ VacancyData _$VacancyDataFromJson(Map<String, dynamic> json) => VacancyData(
           : DateTime.parse(json['delete_at'] as String),
       published: json['published'] as bool,
       title: json['title'] as String,
-      description: json['description'] as String,
-      responsibilities: json['responsibilities'] as String,
-      requirements: json['requirements'] as String,
-      terms: json['terms'] as String,
+      body: json['body'] as String,
       author: json['author'] as int?,
       tags: (json['tags'] as List<dynamic>).map((e) => e as int).toList(),
       category: json['category'] as int,
-      contacts: (json['contacts'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
     );
 
 Map<String, dynamic> _$VacancyDataToJson(VacancyData instance) =>
@@ -39,12 +33,8 @@ Map<String, dynamic> _$VacancyDataToJson(VacancyData instance) =>
       'delete_at': instance.deleteAt?.toIso8601String(),
       'published': instance.published,
       'title': instance.title,
-      'description': instance.description,
-      'responsibilities': instance.responsibilities,
-      'requirements': instance.requirements,
-      'terms': instance.terms,
+      'body': instance.body,
       'author': instance.author,
       'tags': instance.tags,
       'category': instance.category,
-      'contacts': instance.contacts,
     };

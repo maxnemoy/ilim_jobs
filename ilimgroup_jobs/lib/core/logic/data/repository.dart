@@ -44,29 +44,29 @@ class DataRepository {
 
     debugPrint(_vacancyCategories?.length.toString());
 
-    for (TmpVacancy vacancy in tmpData.vacancies) {
-      await _client.createVacancy(
-          VacancyData(
-              published: true,
-              title: vacancy.title,
-              description: vacancy.description,
-              responsibilities: vacancy.responsibilities,
-              requirements: vacancy.requirements,
-              terms: vacancy.terms,
-              tags: [],
-              category: _vacancyCategories!
-                      .firstWhere(
-                        (element) => element.category
-                            .toLowerCase()
-                            .contains(vacancy.description.toLowerCase()),
-                        orElse: () =>
-                            VacancyCategoryData(category: "", description: ""),
-                      )
-                      .id ??
-                  0,
-              contacts: vacancy.contacts),
-          token);
-    }
+    // for (TmpVacancy vacancy in tmpData.vacancies) {
+    //   await _client.createVacancy(
+    //       VacancyData(
+    //           published: true,
+    //           title: vacancy.title,
+    //           body: vacancy.description,
+    //           responsibilities: vacancy.responsibilities,
+    //           requirements: vacancy.requirements,
+    //           terms: vacancy.terms,
+    //           tags: [],
+    //           category: _vacancyCategories!
+    //                   .firstWhere(
+    //                     (element) => element.category
+    //                         .toLowerCase()
+    //                         .contains(vacancy.description.toLowerCase()),
+    //                     orElse: () =>
+    //                         VacancyCategoryData(category: "", description: ""),
+    //                   )
+    //                   .id ??
+    //               0,
+    //           contacts: vacancy.contacts),
+    //       token);
+    // }
     await updateVacancies();
 
     debugPrint(_vacancyData?.length.toString());

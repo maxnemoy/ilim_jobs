@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:ilimgroup_jobs/components/page_header.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
@@ -6,6 +8,7 @@ import 'package:ilimgroup_jobs/core/logic/utils/tag2icon.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/utils.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:zefyr/zefyr.dart';
 
 class VacanciesViewer extends StatefulWidget {
   const VacanciesViewer(
@@ -108,24 +111,13 @@ class _DetailPageState extends State<VacanciesViewer> {
                   const SizedBox(height: 32),
                   Padding(
                     padding: const EdgeInsets.only(left: 28),
-                    child: _TagsBar(data: data.tags,),
+                    child: _TagsBar(
+                      data: data.tags,
+                    ),
                   ),
                   const SizedBox(height: 46),
                   VacancyDetailPart(
-                    title: "Обязанности",
-                    data: data.responsibilities,
-                  ),
-                  VacancyDetailPart(
-                    title: "Требования",
-                    data: data.requirements,
-                  ),
-                  VacancyDetailPart(
-                    title: "Условия",
-                    data: data.terms,
-                  ),
-                  VacancyDetailPart(
-                    title: "Контактная информация",
-                    data: data.contacts?[0] ?? "",
+                    data: data.body,
                   ),
                 ],
               ),
@@ -137,8 +129,12 @@ class _DetailPageState extends State<VacanciesViewer> {
                       padding: const EdgeInsets.only(
                           left: 22, right: 22, top: 20, bottom: 10),
                       child: PageHeader(
-                          actions: [IconButton(onPressed: (){}, icon: const Icon(Icons.favorite))],
-                        ),
+                        actions: [
+                          IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.favorite))
+                        ],
+                      ),
                     ),
                   )),
               const Align(
@@ -156,10 +152,10 @@ class _DetailPageState extends State<VacanciesViewer> {
 }
 
 class VacancyDetailPart extends StatelessWidget {
-  final String title;
   final String data;
-  const VacancyDetailPart({Key? key, required this.title, required this.data})
-      : super(key: key);
+  VacancyDetailPart({Key? key, required this.data}) : super(key: key);
+
+  final FocusNode focus = FocusNode(canRequestFocus: false);
 
   @override
   Widget build(BuildContext context) {
@@ -169,17 +165,11 @@ class VacancyDetailPart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          Text(
-            data,
-            style: TextStyle(
-                color: const Color(0xffffffff).withOpacity(0.7),
-                fontWeight: FontWeight.w400,
-                fontSize: 16),
-          ),
+          ZefyrEditor(
+            focusNode: focus,
+            readOnly: true,
+            showCursor: false,
+            controller: ZefyrController(NotusDocument.fromJson(jsonDecode(data))))
         ],
       ),
     );
@@ -188,30 +178,33 @@ class VacancyDetailPart extends StatelessWidget {
 
 class _TagsBar extends StatelessWidget {
   final List<int> data;
-  const _TagsBar({
-    Key? key,
-    required this.data
-  }) : super(key: key);
+  const _TagsBar({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: data.map((e) => Padding(
-        padding: const EdgeInsets.only(right: 20),
-        child: Tooltip(
-          message: getIt<DataRepository>().tags.firstWhere((element) => element.id == e).tag,
-          child: Container(
-              height: 56,
-              width: 56,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white.withOpacity(0.1),
+        children: data
+            .map(
+              (e) => Padding(
+                padding: const EdgeInsets.only(right: 20),
+                child: Tooltip(
+                  message: getIt<DataRepository>()
+                      .tags
+                      .firstWhere((element) => element.id == e)
+                      .tag,
+                  child: Container(
+                    height: 56,
+                    width: 56,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white.withOpacity(0.1),
+                    ),
+                    child: Center(child: Icon(tag2icon(e))),
+                  ),
+                ),
               ),
-              child: Center(child: Icon(tag2icon(e))),
-            ),
-        ),
-      ),).toList()
-    );
+            )
+            .toList());
   }
 }
 
