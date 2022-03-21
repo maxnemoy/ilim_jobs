@@ -10,6 +10,7 @@ import (
 	"github.com/maxnemoy/ilimjob_server/handlers/secureCheck"
 	"github.com/maxnemoy/ilimjob_server/handlers/upload"
 	"github.com/maxnemoy/ilimjob_server/handlers/user"
+	"github.com/maxnemoy/ilimjob_server/handlers/resume"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/category"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/tag"
@@ -85,6 +86,12 @@ func main() {
 	privateZone.PATCH("/vacancy/tag", tag.Update(conn))
 	privateZone.PUT("/vacancy/category", category.Create(conn))
 	privateZone.PATCH("/vacancy/category", category.Update(conn))
+
+
+	privateZone.GET("/user/resume/all", resume.GetAll(conn))
+	privateZone.GET("/user/resume/all/:id", resume.GetByUser(conn))
+	privateZone.PUT("/user/resume", resume.Create(conn))
+	privateZone.PATCH("/user/resume", resume.Update(conn))
 
 	privateZone.POST("/upload", upload.Upload(conn))
 	apiPublic.Logger.Fatal(apiPublic.Start(":" + port))
