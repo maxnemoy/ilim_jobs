@@ -7,7 +7,6 @@ import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/tag2icon.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/utils.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
-import 'package:routemaster/routemaster.dart';
 import 'package:zefyr/zefyr.dart';
 
 class VacanciesViewer extends StatefulWidget {

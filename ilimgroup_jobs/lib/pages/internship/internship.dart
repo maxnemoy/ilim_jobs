@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
-import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:ilimgroup_jobs/pages/post/post_viewer.dart';
 
 class InternshipPage extends StatefulWidget {
