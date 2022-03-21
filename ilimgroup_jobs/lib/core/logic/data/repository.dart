@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/api/api.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
@@ -8,7 +7,6 @@ import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_category_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_tag_data.dart';
-import 'package:ilimgroup_jobs/data/tmp_import_data/tmp_category.dart';
 import 'package:ilimgroup_jobs/data/tmp_import_data/tmp_data.dart';
 
 class DataRepository {

@@ -3,6 +3,7 @@ import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_type_data.dart';
 import 'package:ilimgroup_jobs/core/models/response_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/auth_data.dart';
+import 'package:ilimgroup_jobs/core/models/user/resume/resume_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/user_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_category_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
@@ -32,6 +33,21 @@ abstract class ApiClient {
 
   @PUT("/user")
   Future<RespData> registration(@Body() UserData user);
+
+  ///[USER.resume]
+  @PUT("/v1/user/resume")
+  Future<RespData> createResume(
+      @Body() ResumeData category, @Header("Authorization") String token);
+
+  @PATCH("/v1/user/resume")
+  Future<RespData> updateResume(
+      @Body() ResumeData category, @Header("Authorization") String token);
+
+  @GET("/v1/user/resume/all")
+  Future<List<ResumeData>> getAllResumes(@Header("Authorization") String token);
+
+  @GET("/v1/user/resume/all/{id}")
+  Future<ResumeData> getResumeByUserId(@Path("id") int id, @Header("Authorization") String token);
 
   ///[POST]
   @PUT("/v1/post")

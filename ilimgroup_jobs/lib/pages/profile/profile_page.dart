@@ -44,7 +44,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 200,
                       color: Theme.of(context).colorScheme.onBackground,
                       child: Center(
-                          child: Text(auth.username,
+                          child: Text(
+                              getIt<AuthenticationRepository>()
+                                      .resume
+                                      ?.firstName ??
+                                  auth.username,
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge
@@ -60,6 +64,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       padding: const EdgeInsets.all(20.0),
                       child: PopupMenuButton<String>(
                         onSelected: (v) {
+                          switch (v) {
+                            case "Выйти":
+                              context.read<AuthenticationCubit>().logout();
+                              break;
+                            default:
+                            
+                          }
                         },
                         itemBuilder: (BuildContext context) {
                           return {'Изменить профиль', 'Выйти'}
@@ -129,11 +140,16 @@ class _UserAvatar extends StatelessWidget {
             child: SizedBox(
                 width: 100,
                 height: 100,
-                child: url.isEmpty ? const Icon(Icons.account_circle, size: 100,) : Image.network(
-                  url,
-                  filterQuality: FilterQuality.high,
-                  fit: BoxFit.fill,
-                )),
+                child: url.isEmpty
+                    ? const Icon(
+                        Icons.account_circle,
+                        size: 100,
+                      )
+                    : Image.network(
+                        url,
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.fill,
+                      )),
           ),
         ),
       ),
