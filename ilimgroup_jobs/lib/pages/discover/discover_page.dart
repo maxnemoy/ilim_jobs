@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ilimgroup_jobs/components/horizontal_swipe.dart';
 import 'package:ilimgroup_jobs/components/selected_item.dart';
 import 'package:ilimgroup_jobs/components/vacancy_card.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
-import 'package:ilimgroup_jobs/core/logic/utils/utils.dart';
 import 'package:routemaster/routemaster.dart';
 
 class DiscoverPage extends StatelessWidget {
@@ -157,27 +157,30 @@ class _RecommendationListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DataBloc, DataState>(builder: (context, state) {
       if (state is DataLoadedState) {
-        return Scrollbar(
-          controller: scrollController,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: ListView.separated(
-              controller: scrollController,
-              physics: const BouncingScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: getIt<DataRepository>().vacancies.length,
-              itemBuilder: (context, index) {
-                return VacancyCard(
-                  isRecommended: true,
-                  tag: "vacancyRecommendedDetail$index",
-                  onTap: () {
-                    Routemaster.of(context).push('/vacancy/$index?rec=true');
-                  },
-                  data: getIt<DataRepository>().vacancies[index],
-                );
-              },
-              separatorBuilder: (context, index) => const SizedBox(width: 20),
+        return ScrollConfiguration(
+          behavior: HorizontalSwipe(),
+          child: Scrollbar(
+            controller: scrollController,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: ListView.separated(
+                controller: scrollController,
+                physics: const BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                itemCount: getIt<DataRepository>().vacancies.length,
+                itemBuilder: (context, index) {
+                  return VacancyCard(
+                    isRecommended: true,
+                    tag: "vacancyRecommendedDetail$index",
+                    onTap: () {
+                      Routemaster.of(context).push('/vacancy/$index?rec=true');
+                    },
+                    data: getIt<DataRepository>().vacancies[index],
+                  );
+                },
+                separatorBuilder: (context, index) => const SizedBox(width: 20),
+              ),
             ),
           ),
         );
@@ -197,19 +200,19 @@ class _DiscoveryHeader extends StatelessWidget {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            InkWell(
-              borderRadius: BorderRadius.circular(360),
-              onTap: () {
-                Scaffold.of(context).openDrawer();
-              },
-              child: const SizedBox(
-                height: 35,
-                width: 35,
-                child: Center(child: Icon(Icons.menu)),
-              ),
-            ),
+            // InkWell(
+            //   borderRadius: BorderRadius.circular(360),
+            //   onTap: () {
+            //     Scaffold.of(context).openDrawer();
+            //   },
+            //   child: const SizedBox(
+            //     height: 35,
+            //     width: 35,
+            //     child: Center(child: Icon(Icons.menu)),
+            //   ),
+            // ),
             InkWell(
               borderRadius: BorderRadius.circular(360),
               onTap: () {
@@ -283,26 +286,28 @@ class _CategoriesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DataBloc, DataState>(builder: (context, state) {
       if (state is DataIsLoadingState) {
-        print("!");
-        return const LinearProgressIndicator();
+        return Container();
       }
       if (state is DataLoadedState) {
-        return Scrollbar(
-          controller: controller,
-          child: ListView(
-              controller: controller,
-              physics: const BouncingScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              children: getIt<DataRepository>()
-                  .categories
-                  .map((e) => SelectedItem(
-                        category: e,
-                        onPressed: (value) => context
-                            .read<DataBloc>()
-                            .add(SelectVacancyCategory(e.id!)),
-                      ))
-                  .toList()),
+        return ScrollConfiguration(
+          behavior: HorizontalSwipe(),
+          child: Scrollbar(
+            controller: controller,
+            child: ListView(
+                controller: controller,
+                physics: const BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 28),
+                children: getIt<DataRepository>()
+                    .categories
+                    .map((e) => SelectedItem(
+                          category: e,
+                          onPressed: (value) => context
+                              .read<DataBloc>()
+                              .add(SelectVacancyCategory(e.id!)),
+                        ))
+                    .toList()),
+          ),
         );
       }
       return Container();

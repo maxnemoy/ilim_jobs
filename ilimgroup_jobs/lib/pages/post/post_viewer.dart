@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ilimgroup_jobs/components/horizontal_swipe.dart';
 import 'package:ilimgroup_jobs/components/page_header.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
@@ -76,67 +77,73 @@ class _DetailPageState extends State<PostViewer> {
                       controller: scrollControllerPhotos,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 28),
-                        child: ListView(
-                          controller: scrollControllerPhotos,
-                          padding: const EdgeInsets.only(left: 28),
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          children: data.assets
-                              .map(
-                                (e) => Padding(
-                                  padding: const EdgeInsets.only(right: 20),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                                content: ConstrainedBox(
-                                                    constraints:
-                                                        const BoxConstraints(
-                                                            maxWidth: 600,
-                                                            maxHeight: 400),
-                                                    child: Column(
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .end,
-                                                          children: [
-                                                            IconButton(
-                                                                onPressed: () {
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                },
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .close))
-                                                          ],
-                                                        ),
-                                                        Expanded(
-                                                            child:
-                                                                Image.network(
-                                                          e,
-                                                          fit: BoxFit.fitWidth,
-                                                        )),
-                                                      ],
-                                                    )),
-                                              ));
-                                    },
-                                    child: Container(
-                                      height: 280,
-                                      width: 280,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(e),
+                        child: ScrollConfiguration(
+                          behavior: HorizontalSwipe(),
+                          child: ListView(
+                            controller: scrollControllerPhotos,
+                            padding: const EdgeInsets.only(left: 28),
+                            physics: const BouncingScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            children: data.assets
+                                .map(
+                                  (e) => Padding(
+                                    padding: const EdgeInsets.only(right: 20),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                                  content: ConstrainedBox(
+                                                      constraints:
+                                                          const BoxConstraints(
+                                                              maxWidth: 600,
+                                                              maxHeight: 400),
+                                                      child: Column(
+                                                        children: [
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              IconButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .close))
+                                                            ],
+                                                          ),
+                                                          Expanded(
+                                                              child:
+                                                                  Image.network(
+                                                            e,
+                                                            fit:
+                                                                BoxFit.fitWidth,
+                                                          )),
+                                                        ],
+                                                      )),
+                                                ));
+                                      },
+                                      child: Container(
+                                        height: 280,
+                                        width: 280,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(e),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              )
-                              .toList(),
+                                )
+                                .toList(),
+                          ),
                         ),
                       ),
                     ),
@@ -173,21 +180,25 @@ class _DetailPageState extends State<PostViewer> {
                         controller: scrollControllerPosts,
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 28),
-                          child: ListView(
-                            controller: scrollControllerPosts,
-                            padding: const EdgeInsets.only(left: 28),
-                            physics: const BouncingScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            children: getIt<DataRepository>()
-                                .posts
-                                .map(
-                                  (e) => Padding(
-                                      padding: const EdgeInsets.only(right: 20),
-                                      child: PostTile(
-                                        data: e,
-                                      )),
-                                )
-                                .toList(),
+                          child: ScrollConfiguration(
+                            behavior: HorizontalSwipe(),
+                            child: ListView(
+                              controller: scrollControllerPosts,
+                              padding: const EdgeInsets.only(left: 28),
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              children: getIt<DataRepository>()
+                                  .posts
+                                  .map(
+                                    (e) => Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 20),
+                                        child: PostTile(
+                                          data: e,
+                                        )),
+                                  )
+                                  .toList(),
+                            ),
                           ),
                         ),
                       ),
