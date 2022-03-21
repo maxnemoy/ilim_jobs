@@ -77,8 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   const Align(
                       alignment: Alignment.bottomCenter,
                       child: _UserAvatar(
-                        url:
-                            "https://i.pinimg.com/564x/cb/6f/59/cb6f59b87ceac24b3410e2a656ae4231.jpg",
+                        url: "",
                       )),
                 ],
               ),
@@ -129,7 +128,7 @@ class _UserAvatar extends StatelessWidget {
             child: SizedBox(
                 width: 100,
                 height: 100,
-                child: Image.network(
+                child: url.isEmpty ? const Icon(Icons.account_circle, size: 100,) : Image.network(
                   url,
                   filterQuality: FilterQuality.high,
                   fit: BoxFit.fill,
