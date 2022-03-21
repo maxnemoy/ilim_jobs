@@ -5,7 +5,7 @@ import 'package:ilimgroup_jobs/components/page_header.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:zefyrka/zefyrka.dart';
+import 'package:zefyr/zefyr.dart';
 
 class PostManager extends StatelessWidget {
   const PostManager({Key? key}) : super(key: key);

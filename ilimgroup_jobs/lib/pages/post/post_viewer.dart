@@ -7,7 +7,7 @@ import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:ilimgroup_jobs/pages/post/post_tile.dart';
-import 'package:zefyrka/zefyrka.dart';
+import 'package:zefyr/zefyr.dart';
 
 class PostViewer extends StatefulWidget {
   const PostViewer({Key? key, this.index, this.data, this.withHeader = true})
@@ -37,7 +37,7 @@ class _DetailPageState extends State<PostViewer> {
 
   final ScrollController scrollControllerPhotos = ScrollController();
   final ScrollController scrollControllerPosts = ScrollController();
-  FocusNode focus = FocusNode();
+  final FocusNode focus = FocusNode(canRequestFocus: false);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,11 +143,11 @@ class _DetailPageState extends State<PostViewer> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 28, vertical: 20),
                     child: ZefyrEditor(
-                      focusNode: null,
-                      showSelectionHandles: false,
-                      enableInteractiveSelection: false,
+                      //autofocus: true,
+                      //expands: true,
                       readOnly: true,
                       showCursor: false,
+                      focusNode: focus,
                       controller: ZefyrController(
                           NotusDocument.fromJson(jsonDecode(data.body))),
                     ),

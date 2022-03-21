@@ -11,7 +11,7 @@ import 'package:ilimgroup_jobs/core/logic/utils/file_uploader.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:zefyrka/zefyrka.dart';
+import 'package:zefyr/zefyr.dart';
 
 class PostEditor extends StatefulWidget {
   final String? id;
@@ -86,6 +86,7 @@ class _PostEditorState extends State<PostEditor> {
                   ZefyrToolbar.basic(controller: _controller),
                   Expanded(
                     child: ZefyrEditor(
+                      focusNode: FocusNode(),
                       controller: _controller,
                     ),
                   ),
