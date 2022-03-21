@@ -17,7 +17,7 @@ type Vacancy struct {
 	Requirements     string    `pg:"requirements" json:"requirements"`
 	Terms            string    `pg:"terms" json:"terms"`
 	Author           int       `pg:"author" json:"author"`
-	Contacts         []string    `pg:"contacts" json:"contacts"`
+	Contacts         []string    `pg:"contacts,array" json:"contacts"`
 	Tags             []int     `pg:"tags,array" json:"tags"`
 	Category         int       `pg:"category" json:"category"`
 }

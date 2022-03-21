@@ -6,8 +6,8 @@ import (
 
 	"github.com/maxnemoy/ilimjob_server/db/models"
 
-	"github.com/golang-jwt/jwt"
 	"github.com/go-pg/pg/v10"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/maxnemoy/ilimjob_server/conf"
 )
