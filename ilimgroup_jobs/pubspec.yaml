@@ -23,6 +23,7 @@ dependencies:
   #zefyrka: ^1.1.1
   zefyr: 1.0.0-rc.5
   intl: ^0.17.0
+  blur: ^3.0.0
   cupertino_icons: ^1.0.2
 
 dev_dependencies:

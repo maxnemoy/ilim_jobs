@@ -1,3 +1,4 @@
+import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
@@ -111,7 +112,7 @@ class UserProfile extends StatelessWidget {
         child: Column(children: [
           TabBar(
             indicatorColor: Theme.of(context).colorScheme.primary,
-            tabs: [
+            tabs: const [
               Tab(
                 icon: Icon(Icons.fact_check),
                 text: "Мои отклики",
@@ -126,7 +127,7 @@ class UserProfile extends StatelessWidget {
               ),
             ],
           ),
-          Expanded(
+          const Expanded(
               child: TabBarView(
                   children: [RespVacancy(), FavoriteVacancy(), ResumeViewer()]))
         ]),
@@ -443,44 +444,116 @@ class _MultiFileFieldState extends State<MultiFileField> {
       padding: const EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          Container(
-            height: 300,
-            child: GridView.count(
-              crossAxisCount: 3,
-              children: List.from(widget.list.map((e) => ListTile(
-                    title: Container(
-                      width: 100,
-                      height: 100,
-                      padding: const EdgeInsets.all(5),
-                      child: Image.network(e)),
-                    trailing: IconButton(
-                      icon: Icon(
-                        Icons.delete,
-                        color: Theme.of(context).colorScheme.onBackground,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          widget.list.removeWhere((element) => element == e);
-                        });
-                      },
-                    ),
-                  )))
-                // ..add(ElevatedButton.icon(
-                //     onPressed: () async {
-                //       String path = await pickFileAndUpload(
-                //           getIt<AuthenticationRepository>().auth?.token ?? "");
-                //       setState(() {
-                //         widget.list.add(path);
-                //       });
-                //     },
-                //     label: const Text("Добавить файл"),
-                //     icon: const Icon(Icons.attach_file)))
-                // ..insert(0, ZoneTitle(text: widget.title)),
+          ZoneTitle(text: widget.title),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: SizedBox(
+              height: 100,
+              child: GridView.extent(
+                  mainAxisSpacing: 5,
+                  crossAxisSpacing: 5,
+                  maxCrossAxisExtent: 100,
+                  children: List.from(widget.list.map((String src) => ImageTile(
+                        src: src,
+                        onDelete: () {
+                          setState(() {
+                            widget.list.removeWhere((element) => element == src);
+                          });
+                        },
+                      )))),
             ),
           ),
+          ElevatedButton.icon(
+              onPressed: () async {
+                String path = await pickFileAndUpload(
+                    getIt<AuthenticationRepository>().auth?.token ?? "");
+                setState(() {
+                  if (path.isNotEmpty) {
+                    widget.list.add(path);
+                  }
+                });
+              },
+              label: const Text("Добавить файл"),
+              icon: const Icon(Icons.attach_file))
         ],
       ),
     );
+  }
+}
+
+class ImageTile extends StatefulWidget {
+  final String src;
+  final VoidCallback? onDelete;
+  const ImageTile({Key? key, required this.src, this.onDelete})
+      : super(key: key);
+
+  @override
+  State<ImageTile> createState() => _ImageTileState();
+}
+
+class _ImageTileState extends State<ImageTile> {
+  bool isHover = false;
+  String extension = "";
+  @override
+  void initState() {
+    extension = widget.src.split(".").last;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: () => setState(() {
+              isHover = !isHover;
+            }),
+        child: Stack(
+          children: [
+            ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Blur(
+                  blur: isHover ? 2.3 : 0,
+                  blurColor: Theme.of(context).colorScheme.onBackground,
+                  colorOpacity: 0.3,
+                  child: SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: extension == "png" ||
+                                extension == "jpg" ||
+                                extension == "jpeg" ||
+                                extension == "gif"
+                            ? Image.network(
+                                widget.src,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                width: 100,
+                                height: 100,
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                                child: Icon(
+                                  Icons.file_present_rounded,
+                                  size: 50,
+                                  color:
+                                      Theme.of(context).colorScheme.background,
+                                ))),
+                  ),
+                )),
+            if (isHover)
+              Align(
+                  alignment: Alignment.center,
+                  child: IconButton(
+                      onPressed: () {
+                        widget.onDelete?.call();
+                      },
+                      icon: const Icon(
+                        Icons.delete_forever_rounded,
+                        color: Colors.red,
+                        size: 30,
+                      )))
+          ],
+        ));
   }
 }
 
