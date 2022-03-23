@@ -14,6 +14,7 @@ import (
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/category"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/tag"
+	"github.com/maxnemoy/ilimjob_server/handlers/bookmark"
 	"log"
 	"net/http"
 	"os"
@@ -66,6 +67,10 @@ func main() {
 	apiPublic.GET("/vacancy/tags", tag.GetAll(conn))
 	apiPublic.GET("/vacancy/categories", category.GetAll(conn))
 
+	apiPublic.GET("/bookmarks", bookmark.GetAll(conn))
+	apiPublic.GET("/bookmark/user/:id", bookmark.GetByUser(conn))
+	apiPublic.GET("/bookmark/vacancy/:id", bookmark.GetByVacancy(conn))
+	
 	privateZone := apiPublic.Group("/v1")
 	conf := middleware.JWTConfig{
 		Claims:     &conf.JwtClaims{},
@@ -74,7 +79,10 @@ func main() {
 	privateZone.Use(middleware.JWTWithConfig(conf))
 	privateZone.GET("/secure", securecheck.SecureCheck(conn))
 	privateZone.GET("/users", root)
-
+	
+	privateZone.PUT("/bookmark", bookmark.Create(conn))
+	privateZone.DELETE("/bookmark", bookmark.Delete(conn))
+	
 	privateZone.PUT("/post", post.Create(conn))
 	privateZone.PATCH("/post", post.Update(conn))
 	privateZone.PUT("/post/type", postType.Create(conn))
