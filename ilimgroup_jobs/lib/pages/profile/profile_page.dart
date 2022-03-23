@@ -1,9 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/cubit.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
+import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/file_uploader.dart';
 import 'package:ilimgroup_jobs/core/models/user/auth_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/resume/resume_data.dart';
@@ -20,10 +24,12 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late AuthData auth;
+  ResumeData? resume;
 
   @override
   void initState() {
     auth = getIt<AuthenticationRepository>().auth!;
+    resume = getIt<AuthenticationRepository>().resume;
     super.initState();
   }
 
@@ -49,10 +55,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Theme.of(context).colorScheme.onBackground,
                       child: Center(
                           child: Text(
-                              getIt<AuthenticationRepository>()
-                                      .resume
-                                      ?.firstName ??
-                                  auth.username,
+                              resume != null
+                                  ? "${resume!.firstName} ${resume!.lastName}"
+                                  : auth.username,
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge
@@ -72,6 +77,75 @@ class _ProfilePageState extends State<ProfilePage> {
                             case "Выйти":
                               context.read<AuthenticationCubit>().logout();
                               break;
+                            case "Изменить профиль":
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title:
+                                            const Text("Управление профилем"),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text("Закрыть"))
+                                        ],
+                                        content: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 20),
+                                          child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                ElevatedButton(
+                                                    onPressed: () async {
+                                                      String? photo =
+                                                          await pickFileAndUpload(
+                                                              auth.token);
+
+                                                      if (resume != null) {
+                                                        resume = resume!
+                                                            .copyWith(
+                                                                resumeLink:
+                                                                    photo);
+                                                        context
+                                                            .read<
+                                                                AuthenticationCubit>()
+                                                            .saveResume(
+                                                                resume!);
+                                                      } else {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(const SnackBar(
+                                                                backgroundColor:
+                                                                    Colors.red,
+                                                                content: Text(
+                                                                    "Сначала создайте резюме")));
+                                                      }
+                                                    },
+                                                    child: const Text(
+                                                        "Загрузить фото")),
+                                                TextField(
+                                                  controller: TextEditingController(
+                                                      text: getIt<
+                                                              AuthenticationRepository>()
+                                                          .auth
+                                                          ?.username),
+                                                  decoration: InputDecoration(
+                                                      label: const Text(
+                                                          "Имя пользователя"),
+                                                      suffix: IconButton(
+                                                        icon: const Icon(
+                                                            Icons.save),
+                                                        onPressed: () {},
+                                                      )),
+                                                ),
+                                                const ZoneTitle(text: "Обновить пароль"),
+                                                const TextField(),
+                                                const TextField()
+                                              ]),
+                                        ),
+                                      ));
+                              break;
                             default:
                           }
                         },
@@ -87,10 +161,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  const Align(
+                  Align(
                       alignment: Alignment.bottomCenter,
                       child: _UserAvatar(
-                        url: "", //TODO: add support users avatar
+                        url: resume?.resumeLink,
                       )),
                 ],
               ),
@@ -186,25 +260,39 @@ class ResumeViewer extends StatefulWidget {
 }
 
 class _ResumeViewerState extends State<ResumeViewer> {
-  ResumeData resume = ResumeData();
+  late ResumeData resume;
 
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController phoneNameController = TextEditingController();
-  final TextEditingController emailNameController = TextEditingController();
-  final TextEditingController cityNameController = TextEditingController();
-  final TextEditingController citizenshipController = TextEditingController();
-  final TextEditingController detailController = TextEditingController();
+  late TextEditingController firstNameController;
+  late TextEditingController lastNameController;
+  late TextEditingController phoneNameController;
+  late TextEditingController emailNameController;
+  late TextEditingController cityNameController;
+  late TextEditingController citizenshipController;
+  late TextEditingController detailController;
 
   @override
   void initState() {
+    resume = getIt<AuthenticationRepository>().resume ?? ResumeData();
+    resume =
+        resume.copyWith(userId: getIt<AuthenticationRepository>().auth?.userId);
     initArraysIfNecessary();
+
+    firstNameController = TextEditingController(text: resume.firstName);
+    lastNameController = TextEditingController(text: resume.lastName);
+    phoneNameController = TextEditingController(text: resume.phone);
+    emailNameController = TextEditingController(text: resume.email);
+    cityNameController = TextEditingController(text: resume.city);
+    citizenshipController = TextEditingController(text: resume.citizenship);
+    detailController = TextEditingController(text: resume.about);
     super.initState();
   }
 
   void initArraysIfNecessary() {
     if (resume.assets == null) {
       resume = resume.copyWith(assets: []);
+    }
+    if (resume.resumeLink == null) {
+      resume = resume.copyWith(resumeLink: "");
     }
     if (resume.works == null) {
       resume = resume.copyWith(works: []);
@@ -219,158 +307,247 @@ class _ResumeViewerState extends State<ResumeViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: SingleChildScrollView(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 800),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: firstNameController,
-                        decoration: const InputDecoration(label: Text("Имя")),
+    return BlocListener<AuthenticationCubit, AuthenticationState>(
+      listener: (context, state) {
+        if (state is ResumeSaved) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Резюме сохранено"),
+            backgroundColor: Colors.green,
+          ));
+        }
+        if (state is ResumeSavedError) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Сохранение резюме завершилось ошибкой"),
+            backgroundColor: Colors.red,
+          ));
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: SingleChildScrollView(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: firstNameController,
+                          decoration: const InputDecoration(label: Text("Имя")),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: lastNameController,
-                        decoration:
-                            const InputDecoration(label: Text("Фамилия")),
+                      const SizedBox(
+                        width: 20,
                       ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: phoneNameController,
-                        decoration:
-                            const InputDecoration(label: Text("Телефон")),
+                      Expanded(
+                        child: TextField(
+                          controller: lastNameController,
+                          decoration:
+                              const InputDecoration(label: Text("Фамилия")),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: emailNameController,
-                        decoration: const InputDecoration(
-                            label: Text("Электронная почта")),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: phoneNameController,
+                          decoration:
+                              const InputDecoration(label: Text("Телефон")),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: citizenshipController,
-                        decoration:
-                            const InputDecoration(label: Text("Гражданство")),
+                      const SizedBox(
+                        width: 20,
                       ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: cityNameController,
-                        decoration: const InputDecoration(label: Text("Город")),
+                      Expanded(
+                        child: TextField(
+                          controller: emailNameController,
+                          decoration: const InputDecoration(
+                              label: Text("Электронная почта")),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          const Text("Дата рождения: "),
-                          if (resume.birthday == null)
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: citizenshipController,
+                          decoration:
+                              const InputDecoration(label: Text("Гражданство")),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: cityNameController,
+                          decoration:
+                              const InputDecoration(label: Text("Город")),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            const Text("Дата рождения: "),
                             if (resume.birthday != null)
                               Text(
                                 DateFormat('dd.MM.yyyy')
                                     .format(resume.birthday!),
                                 style: Theme.of(context).textTheme.bodyText1,
                               ),
-                          IconButton(
-                              onPressed: () {
-                                showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1970),
-                                    lastDate: DateTime.now());
-                              },
-                              icon: const Icon(Icons.calendar_month)),
-                        ],
+                            IconButton(
+                                onPressed: () async {
+                                  DateTime? date = await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(1970),
+                                      lastDate: DateTime.now());
+                                  setState(() {
+                                    print(date);
+                                    resume = resume.copyWith(birthday: date);
+                                  });
+                                },
+                                icon: const Icon(Icons.calendar_month)),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: Row(
-                        children: [
-                          const Text("Пол: "),
-                          const Spacer(),
-                          DropdownButton<String>(
-                              value: resume.gender,
-                              items: const [
-                                DropdownMenuItem(
-                                  child: Text("Мужской"),
-                                  value: "Мужской",
-                                ),
-                                DropdownMenuItem(
-                                  child: Text("Женский"),
-                                  value: "Женский",
-                                ),
-                              ],
-                              onChanged: (v) {
-                                setState(() {
-                                  resume = resume.copyWith(gender: v);
-                                });
-                              }),
-                        ],
+                      const SizedBox(
+                        width: 20,
                       ),
-                    )
-                  ],
-                ),
-                TextField(
-                  maxLines: null,
-                  decoration: const InputDecoration(
-                      label: Text("Дополнительная информация")),
-                  controller: detailController,
-                ),
-                MultiValuesField(
-                  list: resume.education!,
-                  title: "Обучение",
-                ),
-                MultiValuesField(
-                  list: resume.works!,
-                  title: "Предыдущие места работы",
-                ),
-                MultiFileField(
-                  list: resume.assets!,
-                  title: "Сертификаты и документы",
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: ElevatedButton(
-                      onPressed: () {}, child: const Text("Сохранить")),
-                )
-              ],
+                      Expanded(
+                        child: Row(
+                          children: [
+                            const Text("Пол: "),
+                            const Spacer(),
+                            DropdownButton<String>(
+                                value: resume.gender,
+                                items: const [
+                                  DropdownMenuItem(
+                                    child: Text("Мужской"),
+                                    value: "Мужской",
+                                  ),
+                                  DropdownMenuItem(
+                                    child: Text("Женский"),
+                                    value: "Женский",
+                                  ),
+                                ],
+                                onChanged: (v) {
+                                  setState(() {
+                                    resume = resume.copyWith(gender: v);
+                                  });
+                                }),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  TextField(
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                        label: Text("Дополнительная информация")),
+                    controller: detailController,
+                  ),
+                  MultiValuesField(
+                    list: resume.education!,
+                    title: "Обучение",
+                  ),
+                  MultiValuesField(
+                    list: resume.works!,
+                    title: "Предыдущие места работы",
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  CategoryList(
+                    list: resume.categories!,
+                  ),
+                  MultiFileField(
+                    list: resume.assets!,
+                    title: "Сертификаты и документы",
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          resume = resume.copyWith(
+                              firstName: firstNameController.text,
+                              lastName: lastNameController.text,
+                              phone: phoneNameController.text,
+                              email: emailNameController.text,
+                              city: cityNameController.text,
+                              citizenship: citizenshipController.text,
+                              about: detailController.text);
+                          context
+                              .read<AuthenticationCubit>()
+                              .saveResume(resume);
+                        },
+                        child: const Text("Сохранить")),
+                  )
+                ],
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class CategoryList extends StatefulWidget {
+  final List<String> list;
+  const CategoryList({Key? key, required this.list}) : super(key: key);
+
+  @override
+  State<CategoryList> createState() => _CategoryListState();
+}
+
+class _CategoryListState extends State<CategoryList> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const ZoneTitle(text: "Предпочитаемые категории"),
+        Wrap(
+          children: getIt<DataRepository>()
+              .categories
+              .map((e) => GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (widget.list.indexWhere(
+                                (element) => element == e.category) >
+                            -1) {
+                          widget.list
+                              .removeWhere((element) => element == e.category);
+                        } else {
+                          widget.list.add(e.category);
+                        }
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.5),
+                      child: ChoiceChip(
+                        selectedColor:
+                            Theme.of(context).colorScheme.onBackground,
+                        disabledColor: Theme.of(context).colorScheme.background,
+                        label: Text(e.category),
+                        selected: widget.list.indexWhere(
+                                (element) => element == e.category) >
+                            -1,
+                      ),
+                    ),
+                  ))
+              .toList(),
+        ),
+      ],
     );
   }
 }
@@ -457,7 +634,8 @@ class _MultiFileFieldState extends State<MultiFileField> {
                         src: src,
                         onDelete: () {
                           setState(() {
-                            widget.list.removeWhere((element) => element == src);
+                            widget.list
+                                .removeWhere((element) => element == src);
                           });
                         },
                       )))),
@@ -590,8 +768,8 @@ class AdminProfile extends StatelessWidget {
 }
 
 class _UserAvatar extends StatelessWidget {
-  final String url;
-  const _UserAvatar({Key? key, required this.url}) : super(key: key);
+  final String? url;
+  const _UserAvatar({Key? key, this.url}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -607,19 +785,21 @@ class _UserAvatar extends StatelessWidget {
         child: Center(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(42),
-            child: SizedBox(
-                width: 100,
-                height: 100,
-                child: url.isEmpty
-                    ? const Icon(
-                        Icons.account_circle,
-                        size: 100,
-                      )
-                    : Image.network(
-                        url,
-                        filterQuality: FilterQuality.high,
-                        fit: BoxFit.fill,
-                      )),
+            child: GestureDetector(
+              child: SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: url?.isEmpty ?? true
+                      ? const Icon(
+                          Icons.account_circle,
+                          size: 100,
+                        )
+                      : Image.network(
+                          url!,
+                          filterQuality: FilterQuality.high,
+                          fit: BoxFit.fill,
+                        )),
+            ),
           ),
         ),
       ),

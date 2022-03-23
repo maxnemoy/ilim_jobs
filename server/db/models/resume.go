@@ -14,6 +14,7 @@ type Resume struct {
 	FirstName   string    `pg:"first_name" json:"first_name"`
 	LastName    string    `pg:"last_name" json:"last_name"`
 	Phone       string    `pg:"phone" json:"phone"`
+	Email       string    `pg:"email" json:"email"`
 	City        string    `pg:"city" json:"city"`
 	Citizenship string    `pg:"citizenship" json:"citizenship"`
 	BirthDay    time.Time `pg:"birthday" json:"birthday"`
@@ -41,6 +42,7 @@ func (c *Resume) Upgrade(conn *pg.DB) error {
 		Set("first_name = ?0", c.FirstName).
 		Set("last_name = ?0", c.LastName).
 		Set("phone = ?0", c.Phone).
+		Set("email = ?0", c.Email).
 		Set("city = ?0", c.City).
 		Set("citizenship = ?0", c.Citizenship).
 		Set("birthday = ?0", c.BirthDay).

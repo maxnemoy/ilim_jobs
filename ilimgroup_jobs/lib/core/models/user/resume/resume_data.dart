@@ -18,13 +18,16 @@ class ResumeData {
   @JsonKey(name: 'last_name')
   final String? lastName;
   final String? phone;
+  final String? email;
   final String? city;
   final String? citizenship;
+  @JsonKey(toJson: dateTimeUTCToJson)
   final DateTime? birthday;
   final String? gender;
   final List<String>? education;
   final List<String>? categories;
   final List<String>? works;
+  @JsonKey(name: 'resume_link')
   final String? resumeLink;
   final List<String>? assets;
   final String? about;
@@ -38,6 +41,7 @@ class ResumeData {
       this.firstName,
       this.lastName,
       this.phone,
+      this.email,
       this.city,
       this.citizenship,
       this.birthday,
@@ -59,6 +63,7 @@ class ResumeData {
           String? firstName,
           String? lastName,
           String? phone,
+          String? email,
           String? city,
           String? citizenship,
           DateTime? birthday,
@@ -78,6 +83,7 @@ class ResumeData {
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
         phone: phone ?? this.phone,
+        email: email ?? this.email,
         city: city ?? this.city,
         citizenship: citizenship ?? this.citizenship,
         birthday: birthday ?? this.birthday,
@@ -90,3 +96,5 @@ class ResumeData {
         about: about ?? this.about,
       );
 }
+
+String dateTimeUTCToJson(DateTime? json) => json!.toUtc().toIso8601String();

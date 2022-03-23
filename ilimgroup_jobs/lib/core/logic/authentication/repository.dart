@@ -35,7 +35,7 @@ class AuthenticationRepository {
     }
   }
 
-  FutureOr<void> saveResume(ResumeData data) async {
+  FutureOr<bool> saveResume(ResumeData data) async {
     try {
       if (data.id == null) {
         data = data.copyWith(id: _auth!.userId);
@@ -46,8 +46,9 @@ class AuthenticationRepository {
 
       _resumeData =
           await _client.getResumeByUserId(_auth!.userId, _auth!.token);
+      return true;
     } catch (_) {
-      return;
+      return false;
     }
   }
 

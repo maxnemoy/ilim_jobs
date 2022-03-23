@@ -21,6 +21,7 @@ ResumeData _$ResumeDataFromJson(Map<String, dynamic> json) => ResumeData(
       firstName: json['first_name'] as String?,
       lastName: json['last_name'] as String?,
       phone: json['phone'] as String?,
+      email: json['email'] as String?,
       city: json['city'] as String?,
       citizenship: json['citizenship'] as String?,
       birthday: json['birthday'] == null
@@ -35,7 +36,7 @@ ResumeData _$ResumeDataFromJson(Map<String, dynamic> json) => ResumeData(
           .toList(),
       works:
           (json['works'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      resumeLink: json['resumeLink'] as String?,
+      resumeLink: json['resume_link'] as String?,
       assets:
           (json['assets'] as List<dynamic>?)?.map((e) => e as String).toList(),
       about: json['about'] as String?,
@@ -51,14 +52,15 @@ Map<String, dynamic> _$ResumeDataToJson(ResumeData instance) =>
       'first_name': instance.firstName,
       'last_name': instance.lastName,
       'phone': instance.phone,
+      'email': instance.email,
       'city': instance.city,
       'citizenship': instance.citizenship,
-      'birthday': instance.birthday?.toIso8601String(),
+      'birthday': dateTimeUTCToJson(instance.birthday),
       'gender': instance.gender,
       'education': instance.education,
       'categories': instance.categories,
       'works': instance.works,
-      'resumeLink': instance.resumeLink,
+      'resume_link': instance.resumeLink,
       'assets': instance.assets,
       'about': instance.about,
     };
