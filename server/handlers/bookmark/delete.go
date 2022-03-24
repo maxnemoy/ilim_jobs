@@ -2,7 +2,6 @@ package bookmark
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/maxnemoy/ilimjob_server/db/models"
 
@@ -19,8 +18,6 @@ func Delete(conn *pg.DB) func(ctx echo.Context) error {
 			return ctx.JSON(http.StatusBadRequest,
 				struct{ Error string }{"binding error"})
 		}
-		bookmark.DeleteAt = time.Now()
-
 		user := ctx.Get("user").(*jwt.Token)
     	claims := user.Claims.(*conf.JwtClaims)
 		if(claims.ID == bookmark.UserId){

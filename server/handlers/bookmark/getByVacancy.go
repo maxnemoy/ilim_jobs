@@ -23,7 +23,7 @@ func GetByVacancy(conn *pg.DB) func(ctx echo.Context) error {
 		}
 		bookmark.VacancyId = id
 
-		bookmarks, err := bookmark.GetAllByUser(conn)
+		bookmarks, err := bookmark.GetAllByVacancy(conn)
 		if err != nil {
 			return ctx.JSON(http.StatusBadRequest,
 				struct{ Error string }{err.Error()})
