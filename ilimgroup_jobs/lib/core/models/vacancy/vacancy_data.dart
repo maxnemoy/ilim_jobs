@@ -17,6 +17,7 @@ class VacancyData {
   final int? author;
   final List<int> tags;
   final int category;
+  final int views;
 
   factory VacancyData.fromJson(Map<String, dynamic> json) =>
       _$VacancyDataFromJson(json);
@@ -31,7 +32,8 @@ class VacancyData {
       required this.body,
       this.author,
       required this.tags,
-      required this.category});
+      required this.category,
+      this.views = 0});
   Map<String, dynamic> toJson() => _$VacancyDataToJson(this);
 
   VacancyData copyWith(
@@ -55,5 +57,6 @@ class VacancyData {
           body: body ?? this.body,
           author: author ?? this.author,
           tags: tags ?? this.tags,
-          category: category ?? this.category);
+          category: category ?? this.category,
+          views: views);
 }

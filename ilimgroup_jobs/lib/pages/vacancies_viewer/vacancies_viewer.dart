@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:ilimgroup_jobs/components/page_header.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
+import 'package:ilimgroup_jobs/core/api/api.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/tag2icon.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/utils.dart';
@@ -26,7 +28,15 @@ class _DetailPageState extends State<VacanciesViewer> {
   @override
   void initState() {
     data = getIt<DataRepository>().vacancies[int.parse(widget.index)];
+    addView();
     super.initState();
+  }
+
+  FutureOr<void> addView() {
+    if(data.id != null){
+      ApiClient client = ApiClient();
+      client.vacancyView(data.id!);
+    }
   }
 
   @override
@@ -165,10 +175,11 @@ class VacancyDetailPart extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ZefyrEditor(
-            focusNode: focus,
-            readOnly: true,
-            showCursor: false,
-            controller: ZefyrController(NotusDocument.fromJson(jsonDecode(data))))
+              focusNode: focus,
+              readOnly: true,
+              showCursor: false,
+              controller:
+                  ZefyrController(NotusDocument.fromJson(jsonDecode(data))))
         ],
       ),
     );

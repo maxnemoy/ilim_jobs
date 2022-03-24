@@ -338,6 +338,20 @@ class _ApiClient implements ApiClient {
   }
 
   @override
+  Future<void> vacancyView(id) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    await _dio.fetch<void>(_setStreamType<void>(
+        Options(method: 'GET', headers: _headers, extra: _extra)
+            .compose(_dio.options, '/vacancy/view/${id}',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    return null;
+  }
+
+  @override
   Future<RespData> createVacancyTag(tag, token) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

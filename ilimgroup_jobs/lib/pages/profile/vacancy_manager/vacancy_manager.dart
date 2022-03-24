@@ -25,6 +25,7 @@ class VacancyManager extends StatelessWidget {
                   .vacancies
                   .map((e) => ListTile(
                         title: Text(e.title),
+                        subtitle: Text("Просмотров: ${e.views}"),
                         onTap: () {
                           Routemaster.of(context)
                               .push("/vacancy_manager/edit/${e.id}");

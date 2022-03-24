@@ -99,6 +99,9 @@ abstract class ApiClient {
   @GET("/vacancies")
   Future<List<VacancyData>> getAllVacancies();
 
+  @GET("/vacancy/view/{id}")
+  Future<void> vacancyView(@Path() int id);
+
   ///[VACANCY.tag]
   @PUT("/v1/vacancy/tag")
   Future<RespData> createVacancyTag(
