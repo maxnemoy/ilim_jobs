@@ -21,9 +21,8 @@ func (b *Bookmark) Create(conn *pg.DB) error {
 }
 
 func (b *Bookmark) Delete(conn *pg.DB) error {
-	*b.DeleteAt = time.Now()
 	_, err := conn.Model(b).Where("id = ?0", b.ID).
-		Set("delete_at = ?0", b.DeleteAt).
+		Set("delete_at = ?0", time.Now()).
 		Update()
 	if err != nil {
 		return err
