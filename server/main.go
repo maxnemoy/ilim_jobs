@@ -14,6 +14,7 @@ import (
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/category"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/tag"
+	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/request"
 	"github.com/maxnemoy/ilimjob_server/handlers/bookmark"
 	"log"
 	"net/http"
@@ -79,6 +80,12 @@ func main() {
 	privateZone.Use(middleware.JWTWithConfig(conf))
 	privateZone.GET("/secure", securecheck.SecureCheck(conn))
 	privateZone.GET("/users", root)
+
+	privateZone.PUT("/vacancy/request", request.Create(conn))
+	privateZone.PATCH("/vacancy/request", request.Update(conn))
+	apiPublic.GET("/vacancy/requests", request.GetAll(conn))
+	apiPublic.GET("/vacancy/requests/user/:id", request.GetByUser(conn))
+	apiPublic.GET("/vacancy/requests/:id", request.GetByVacancy(conn))
 	
 	privateZone.PUT("/bookmark", bookmark.Create(conn))
 	privateZone.DELETE("/bookmark", bookmark.Delete(conn))
