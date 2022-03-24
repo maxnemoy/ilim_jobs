@@ -83,6 +83,7 @@ func main() {
 
 	privateZone.PUT("/vacancy/request", request.Create(conn))
 	privateZone.PATCH("/vacancy/request", request.Update(conn))
+	apiPublic.GET("/vacancy/view/:id", vacancy.AddViews(conn))
 	apiPublic.GET("/vacancy/requests", request.GetAll(conn))
 	apiPublic.GET("/vacancy/requests/user/:id", request.GetByUser(conn))
 	apiPublic.GET("/vacancy/requests/:id", request.GetByVacancy(conn))

@@ -16,6 +16,7 @@ type Vacancy struct {
 	Author    int       `pg:"author" json:"author"`
 	Tags      []int     `pg:"tags,array" json:"tags"`
 	Category  int       `pg:"category" json:"category"`
+	Views     int       `pg:"views" json:"views"`
 }
 
 func (v *Vacancy) Create(conn *pg.DB) error {
@@ -39,6 +40,21 @@ func (v *Vacancy) Upgrade(conn *pg.DB) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (v *Vacancy) AddViews(conn *pg.DB) error {
+	v.UpgradeAt = time.Now()
+	vacancy := &Vacancy{}
+	err := conn.Model(vacancy).Where("id = ?0", v.ID).First()
+	if err != nil {
+		return err
+	}
+
+	_, err = conn.Model(v).Where("id = ?0", v.ID).
+	Set("views = ?0", vacancy.Views+1).
+	Update()
+
 	return nil
 }
 
