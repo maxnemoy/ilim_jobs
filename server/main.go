@@ -6,6 +6,7 @@ import (
 	"github.com/maxnemoy/ilimjob_server/db"
 	"github.com/maxnemoy/ilimjob_server/handlers/importer"
 	"github.com/maxnemoy/ilimjob_server/handlers/post"
+	"github.com/maxnemoy/ilimjob_server/handlers/post/comment"
 	"github.com/maxnemoy/ilimjob_server/handlers/post/postType"
 	"github.com/maxnemoy/ilimjob_server/handlers/secureCheck"
 	"github.com/maxnemoy/ilimjob_server/handlers/upload"
@@ -62,6 +63,7 @@ func main() {
 	apiPublic.PUT("/user", user.CreateUser(conn))
 
 	apiPublic.GET("/posts", post.GetAll(conn))
+	apiPublic.GET("/comments", comment.GetAll(conn))
 	apiPublic.GET("/post/types", postType.GetAll(conn))
 
 	apiPublic.GET("/vacancies", vacancy.GetAll(conn))
@@ -90,6 +92,9 @@ func main() {
 	
 	privateZone.PUT("/bookmark", bookmark.Create(conn))
 	privateZone.DELETE("/bookmark", bookmark.Delete(conn))
+
+	privateZone.PUT("/comment", comment.Create(conn))
+	privateZone.PATCH("/comment", comment.Update(conn))
 	
 	privateZone.PUT("/post", post.Create(conn))
 	privateZone.PATCH("/post", post.Update(conn))

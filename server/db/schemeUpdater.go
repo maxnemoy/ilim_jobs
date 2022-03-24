@@ -18,6 +18,7 @@ func createSchema(db *pg.DB) error {
 		(*models.Resume)(nil),
 		(*models.Bookmark)(nil),
 		(*models.Request)(nil),
+		(*models.Comment)(nil),
 	} {
 		err := db.Model(model).CreateTable(&orm.CreateTableOptions{IfNotExists: true})
 		if err != nil {
