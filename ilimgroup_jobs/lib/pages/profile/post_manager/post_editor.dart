@@ -11,7 +11,7 @@ import 'package:ilimgroup_jobs/core/logic/utils/file_uploader.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:zefyr/zefyr.dart';
+import 'package:zefyrka/zefyrka.dart';
 
 class PostEditor extends StatefulWidget {
   final String? id;

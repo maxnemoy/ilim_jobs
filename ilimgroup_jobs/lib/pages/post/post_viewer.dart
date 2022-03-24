@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:ilimgroup_jobs/components/horizontal_swipe.dart';
 import 'package:ilimgroup_jobs/components/page_header.dart';
+import 'package:ilimgroup_jobs/components/user_avatar.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
+import 'package:ilimgroup_jobs/core/models/post/comments/comment_data.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:ilimgroup_jobs/pages/post/post_tile.dart';
-import 'package:zefyr/zefyr.dart';
+import 'package:zefyrka/zefyrka.dart';
 
 class PostViewer extends StatefulWidget {
   const PostViewer({Key? key, this.index, this.data, this.withHeader = true})
@@ -201,8 +203,14 @@ class _DetailPageState extends State<PostViewer> {
                         ),
                       ),
                     ),
+                  if (!widget.withHeader) CommentZone()
                 ],
               ),
+              if (!widget.withHeader)
+                const Padding(
+                  padding: EdgeInsets.only(left: 28),
+                  child: ZoneTitle(text: ""),
+                ),
               if (widget.withHeader)
                 Align(
                     alignment: Alignment.topCenter,
@@ -232,6 +240,102 @@ class _DetailPageState extends State<PostViewer> {
   }
 
   void onStartButtonPressed() {}
+}
+
+class CommentZone extends StatelessWidget {
+  CommentZone({Key? key}) : super(key: key);
+  final PageController controller = PageController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(28),
+      child: SizedBox(
+        height: 500,
+        child: Center(
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).colorScheme.onBackground),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const SizedBox(width: 20,),
+                      const Text("Истории успеха"),
+                      const Spacer(),
+                      IconButton(
+                          onPressed: () {
+                            controller.previousPage(
+                                duration: Duration(milliseconds: 200),
+                                curve: Curves.bounceIn);
+                          },
+                          icon: Icon(Icons.chevron_left)),
+                      IconButton(
+                          onPressed: () {
+                            controller.nextPage(
+                                duration: Duration(milliseconds: 200),
+                                curve: Curves.bounceIn);
+                          },
+                          icon: Icon(Icons.chevron_right_rounded)),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: PageView(
+                    controller: controller,
+                    children: getIt<DataRepository>().comments.map((e) => CommentView(comment: e)).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CommentView extends StatelessWidget {
+  final CommentData comment;
+  CommentView({Key? key, required this.comment}) : super(key: key);
+  final FocusNode focusNode = FocusNode(canRequestFocus: false);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Row(
+        children: [
+          Expanded(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              UserAvatar(url: comment.avatar, whitBorder: false,),
+              Text(
+                comment.username,
+                style: Theme.of(context).textTheme.titleMedium,
+              )
+            ],
+          )),
+          const VerticalDivider(),
+          Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: ZefyrEditor(
+                  readOnly: true,
+                  showCursor: false,
+                  focusNode: focusNode,
+                  controller: ZefyrController(NotusDocument.fromJson(jsonDecode(comment.body)))),
+              ))
+        ],
+      ),
+    );
+  }
 }
 
 class _BottomBar extends StatelessWidget {

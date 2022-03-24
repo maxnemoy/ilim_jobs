@@ -37,3 +37,11 @@ class SavePostEvent extends DataEvent {
 
   const SavePostEvent(this.data, this.token);
 }
+
+
+class SaveCommentEvent extends DataEvent {
+  final CommentData data;
+  final String token;
+
+  const SaveCommentEvent(this.data, this.token);
+}

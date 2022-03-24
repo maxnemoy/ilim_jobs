@@ -7,6 +7,8 @@ import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:ilimgroup_jobs/pages/home_page.dart';
 import 'package:ilimgroup_jobs/pages/internship/internship.dart';
 import 'package:ilimgroup_jobs/pages/not_found/not_found.dart';
+import 'package:ilimgroup_jobs/pages/profile/comment_manager/comment_editor.dart';
+import 'package:ilimgroup_jobs/pages/profile/comment_manager/comment_manager.dart';
 import 'package:ilimgroup_jobs/pages/profile/post_manager/post_editor.dart';
 import 'package:ilimgroup_jobs/pages/profile/post_manager/post_manage.dart';
 import 'package:ilimgroup_jobs/pages/post/post_viewer.dart';
@@ -35,7 +37,8 @@ final routes = RouteMap(
     '/internship': (_)=> const MaterialPage(child: InternshipPage()),
     '/internship/post/:id': (info)=> MaterialPage(child: PostViewer(index: info.pathParameters["id"] ?? "0")),
     '/profile': (_)=> getIt<AuthenticationRepository>().auth != null ? const MaterialPage(child: ProfilePage()) : const MaterialPage(child: AuthPage()),
-    // TODO: check roles
+    '/comment_manager': (_)=> getIt<AuthenticationRepository>().auth != null ? const MaterialPage(child: CommentManager()) : const MaterialPage(child: AuthPage()),
+    '/comment_manager/edit/:id': (info)=> getIt<AuthenticationRepository>().auth != null ? MaterialPage(child: CommentEditor(index: info.pathParameters["id"],)) : const MaterialPage(child: AuthPage()),
     '/vacancy_manager': (_)=> getIt<AuthenticationRepository>().auth != null ? const MaterialPage(child: VacancyManager()) : const MaterialPage(child: AuthPage()),
     '/vacancy_manager/edit/:id': (info)=> getIt<AuthenticationRepository>().auth != null ? MaterialPage(child: VacancyEditor(id: info.pathParameters["id"])) : const MaterialPage(child: AuthPage()),
     '/post_manager': (info)=> getIt<AuthenticationRepository>().auth != null ? const MaterialPage(child: PostManager()) : const MaterialPage(child: AuthPage()),

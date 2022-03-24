@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ilimgroup_jobs/components/user_avatar.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/cubit.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
@@ -163,7 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   Align(
                       alignment: Alignment.bottomCenter,
-                      child: _UserAvatar(
+                      child: UserAvatar(
                         url: resume?.resumeLink,
                       )),
                 ],
@@ -761,50 +762,14 @@ class AdminProfile extends StatelessWidget {
               Routemaster.of(context).push("/post_manager");
             },
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _UserAvatar extends StatelessWidget {
-  final String? url;
-  const _UserAvatar({Key? key, this.url}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 120,
-      width: 120,
-      child: Card(
-        elevation: 4.0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(60),
-            side: BorderSide(
-                width: 5, color: Theme.of(context).colorScheme.background)),
-        child: Center(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(42),
-            child: GestureDetector(
-              child: SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: url?.isEmpty ?? true
-                      ? const Icon(
-                          Icons.account_circle,
-                          size: 100,
-                        )
-                      : Image.network(
-                          url!,
-                          filterQuality: FilterQuality.high,
-                          fit: BoxFit.fill,
-                        )),
-            ),
+          ListTile(
+            leading: const Icon(Icons.comment),
+            title: const Text("Управление комментариями"),
+            onTap: () {
+              Routemaster.of(context).push("/comment_manager");
+            },
           ),
-        ),
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        ],
       ),
     );
   }

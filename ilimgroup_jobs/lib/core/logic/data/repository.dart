@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/api/api.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
+import 'package:ilimgroup_jobs/core/models/post/comments/comment_data.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_category_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
@@ -16,6 +17,7 @@ class DataRepository {
   List<VacancyTagData>? _vacancyTags;
   List<VacancyData>? _vacancyData;
   List<PostData>? _postData;
+  List<CommentData>? _comments;
 
   List<VacancyData>? _vacancyDataSorted;
 
@@ -24,6 +26,7 @@ class DataRepository {
   List<VacancyData> get vacancies =>
       _vacancyDataSorted != null ? _vacancyDataSorted! : _vacancyData ?? [];
   List<PostData> get posts => _postData ?? [];
+  List<CommentData> get comments => _comments ?? [];
 
   final List<int> _selectedCategory = [];
   final List<int> _selectedTags = [];
@@ -82,11 +85,16 @@ class DataRepository {
     _postData = await _client.getAllPosts();
   }
 
+  FutureOr<void> updateComments() async {
+    _comments = await _client.getAllComments();
+  }
+
   FutureOr<void> loadData() async {
     await updateCategories();
     await updateVacancies();
     await updateTags();
     await updatePosts();
+    await updateComments();
   }
 
   FutureOr<void> sortByCategory(List<int> cats) async {
@@ -131,5 +139,14 @@ class DataRepository {
 
   FutureOr<void> upgradePost(PostData data, String token) async {
     await _client.updatePost(data, token);
+  }
+
+
+  FutureOr<void> createComment(CommentData data, String token) async {
+    await _client.createComment(data, token);
+  }
+
+  FutureOr<void> upgradeComment(CommentData data, String token) async {
+    await _client.updateComment(data, token);
   }
 }

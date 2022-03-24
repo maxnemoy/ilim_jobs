@@ -10,7 +10,7 @@ import 'package:ilimgroup_jobs/core/logic/utils/tag2icon.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
 import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:routemaster/routemaster.dart';
-import 'package:zefyr/zefyr.dart';
+import 'package:zefyrka/zefyrka.dart';
 
 // ignore: must_be_immutable
 class VacancyEditor extends StatefulWidget {

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart' hide Headers;
+import 'package:ilimgroup_jobs/core/models/post/comments/comment_data.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_type_data.dart';
 import 'package:ilimgroup_jobs/core/models/response_data.dart';
@@ -47,7 +48,8 @@ abstract class ApiClient {
   Future<List<ResumeData>> getAllResumes(@Header("Authorization") String token);
 
   @GET("/v1/user/resume/all/{id}")
-  Future<ResumeData> getResumeByUserId(@Path("id") int id, @Header("Authorization") String token);
+  Future<ResumeData> getResumeByUserId(
+      @Path("id") int id, @Header("Authorization") String token);
 
   ///[POST]
   @PUT("/v1/post")
@@ -60,6 +62,18 @@ abstract class ApiClient {
 
   @GET("/posts")
   Future<List<PostData>> getAllPosts();
+
+  ///[POST.comments]
+  @PUT("/v1/comment")
+  Future<RespData> createComment(
+      @Body() CommentData comment, @Header("Authorization") String token);
+
+  @PATCH("/v1/comment")
+  Future<RespData> updateComment(
+      @Body() CommentData comment, @Header("Authorization") String token);
+
+  @GET("/comments")
+  Future<List<CommentData>> getAllComments();
 
   ///[POST.type]
   @PUT("/v1/post/type")
