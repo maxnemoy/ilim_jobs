@@ -6,12 +6,11 @@ part 'user_data.g.dart';
 class UserData {
   final String username;
   final String password;
-  
-  UserData({
-    required this.username,
-    required this.password
-  });
+  final int type;
 
-  factory UserData.fromJson(Map<String, dynamic> json) => _$UserDataFromJson(json);
+  UserData({required this.username, required this.password, this.type=1});
+
+  factory UserData.fromJson(Map<String, dynamic> json) =>
+      _$UserDataFromJson(json);
   Map<String, dynamic> toJson() => _$UserDataToJson(this);
 }

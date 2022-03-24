@@ -20,7 +20,6 @@ func CreateUser(conn *pg.DB) func(ctx echo.Context) error {
 		}
 		user.CreateAt = time.Now()
 		user.UpgradeAt = time.Now()
-		user.Type = 1
 
 		shaEncoder := sha256.New()
 		shaEncoder.Write([]byte(user.Password))

@@ -42,13 +42,8 @@ func (usr *User) GetUser(conn *pg.DB) (*User, error) {
 func (usr User) Upgrade(conn *pg.DB) error {
 	usr.UpgradeAt = time.Now()
 	_, err := conn.Model(&usr).Where("id = ?0", usr.ID).
-		Set("upgrade_at = ?upgrade_at").
-		Set("username = ?username").
-		Set("first_name = ?first_name").
-		Set("last_name = ?last_name").
-		Set("middle_name = ?middle_name").
-		Set("type = ?type").
-		Set("department_uuid = ?department_uuid").
+		Set("upgrade_at = ?0", usr.UpgradeAt).
+		Set("type = ?0", usr.Type).
 		Update()
 	if err != nil {
 		return err

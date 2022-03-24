@@ -5,6 +5,7 @@ import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
 import 'package:ilimgroup_jobs/pages/auth/auth_page.dart';
 import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:ilimgroup_jobs/pages/home_page.dart';
+import 'package:ilimgroup_jobs/pages/init/init.dart';
 import 'package:ilimgroup_jobs/pages/internship/internship.dart';
 import 'package:ilimgroup_jobs/pages/not_found/not_found.dart';
 import 'package:ilimgroup_jobs/pages/profile/comment_manager/comment_editor.dart';
@@ -34,6 +35,7 @@ final routes = RouteMap(
           paths: ['/home', '/internship', '/profile'],
         ),
     '/home': (_)=> const MaterialPage(child: DiscoverPage()),
+    '/init': (_)=> MaterialPage(child: InitPage()),
     '/internship': (_)=> const MaterialPage(child: InternshipPage()),
     '/internship/post/:id': (info)=> MaterialPage(child: PostViewer(index: info.pathParameters["id"] ?? "0")),
     '/profile': (_)=> getIt<AuthenticationRepository>().auth != null ? const MaterialPage(child: ProfilePage()) : const MaterialPage(child: AuthPage()),

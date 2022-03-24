@@ -60,6 +60,7 @@ func main() {
 	apiPublic.Static("/static", "./static/")
 	apiPublic.POST("/import", importer.Import(conn))
 	apiPublic.POST("/user", user.AuthUser(conn))
+	apiPublic.PATCH("/user", user.Update(conn))
 	apiPublic.PUT("/user", user.CreateUser(conn))
 
 	apiPublic.GET("/posts", post.GetAll(conn))
