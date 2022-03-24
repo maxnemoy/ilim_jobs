@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:ilimgroup_jobs/components/page_header.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/api/api.dart';
+import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/tag2icon.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/utils.dart';
+import 'package:ilimgroup_jobs/core/models/user/auth_data.dart';
+import 'package:ilimgroup_jobs/core/models/user/bookmark/bookmark_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
+import 'package:routemaster/routemaster.dart';
 import 'package:zefyrka/zefyrka.dart';
 
 class VacanciesViewer extends StatefulWidget {
@@ -24,20 +28,34 @@ class VacanciesViewer extends StatefulWidget {
 }
 
 class _DetailPageState extends State<VacanciesViewer> {
+  ApiClient client = ApiClient();
+  AuthData? authData;
   late VacancyData data;
   @override
   void initState() {
     data = getIt<DataRepository>().vacancies[int.parse(widget.index)];
+    authData = getIt<AuthenticationRepository>().auth;
     addView();
     super.initState();
   }
 
   FutureOr<void> addView() {
-    if(data.id != null){
-      ApiClient client = ApiClient();
+    if (data.id != null) {
       client.vacancyView(data.id!);
     }
   }
+
+  bool get hasFavorite {
+    return getIt<AuthenticationRepository>()
+            .bookmarks
+            .indexWhere((element) => element.vacancyId == data.id!) >
+        -1;
+  }
+
+  Bookmark get bookmark =>getIt<AuthenticationRepository>()
+            .bookmarks
+            .firstWhere((element) => element.vacancyId == data.id,
+             orElse: ()=>Bookmark(userId: 0, vacancyId: 0));
 
   @override
   Widget build(BuildContext context) {
@@ -81,42 +99,6 @@ class _DetailPageState extends State<VacanciesViewer> {
                     ),
                   ),
                   const SizedBox(height: 25),
-                  // SizedBox(
-                  //   height: 279,
-                  //   child: ListView(
-                  //     physics: const BouncingScrollPhysics(),
-                  //     scrollDirection: Axis.horizontal,
-                  //     children: [
-                  //       const SizedBox(width: 28),
-                  //       Container(
-                  //         height: 280,
-                  //         width: 280,
-                  //         decoration: BoxDecoration(
-                  //           borderRadius: BorderRadius.circular(20),
-                  //           image: DecorationImage(
-                  //             fit: BoxFit.cover,
-                  //             image: AssetImage("assets/pics/pic1.png"),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       SizedBox(width: 20),
-                  //       Container(
-                  //         height: 280,
-                  //         width: 280,
-                  //         decoration: BoxDecoration(
-                  //           color: Colors.blue,
-                  //           borderRadius: BorderRadius.circular(20),
-                  //           image: DecorationImage(
-                  //             fit: BoxFit.cover,
-                  //             image: AssetImage(
-                  //               "assets/pics/pic2.jpg",
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       )
-                  //     ],
-                  //   ),
-                  // ),
                   const SizedBox(height: 32),
                   Padding(
                     padding: const EdgeInsets.only(left: 28),
@@ -140,8 +122,51 @@ class _DetailPageState extends State<VacanciesViewer> {
                       child: PageHeader(
                         actions: [
                           IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.favorite))
+                              onPressed: () async {
+                                if (authData != null) {
+                                  if (!hasFavorite) {
+                                    await client.createBookmark(
+                                        Bookmark(
+                                            userId: authData!.userId,
+                                            vacancyId: data.id!),
+                                        authData!.token);
+                                  } else {
+                                    await client.deleteBookmark(
+                                        bookmark,
+                                        authData!.token);
+                                  }
+                                  await getIt<AuthenticationRepository>()
+                                      .getBookmarks();
+                                  setState(() {});
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                          backgroundColor: Colors.red,
+                                          content: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                "Необходимо авторизоваться",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1,
+                                              ),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Routemaster.of(context)
+                                                        .push("/profile");
+                                                  },
+                                                  child: const Text("Войти"))
+                                            ],
+                                          )));
+                                }
+                              },
+                              icon: authData != null
+                                  ? Icon(hasFavorite
+                                      ? Icons.favorite
+                                      : Icons.favorite_border_rounded)
+                                  : const Icon(Icons.favorite_border_rounded))
                         ],
                       ),
                     ),

@@ -6,12 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ilimgroup_jobs/components/user_avatar.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
+import 'package:ilimgroup_jobs/core/api/api.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/cubit.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/file_uploader.dart';
 import 'package:ilimgroup_jobs/core/models/user/auth_data.dart';
+import 'package:ilimgroup_jobs/core/models/user/bookmark/bookmark_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/resume/resume_data.dart';
+import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
 import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:intl/intl.dart';
 import 'package:routemaster/routemaster.dart';
@@ -140,7 +143,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                         onPressed: () {},
                                                       )),
                                                 ),
-                                                const ZoneTitle(text: "Обновить пароль"),
+                                                const ZoneTitle(
+                                                    text: "Обновить пароль"),
                                                 const TextField(),
                                                 const TextField()
                                               ]),
@@ -232,22 +236,67 @@ class RespVacancy extends StatelessWidget {
   }
 }
 
-class FavoriteVacancy extends StatelessWidget {
+class FavoriteVacancy extends StatefulWidget {
   const FavoriteVacancy({Key? key}) : super(key: key);
+
+  @override
+  State<FavoriteVacancy> createState() => _FavoriteVacancyState();
+}
+
+class _FavoriteVacancyState extends State<FavoriteVacancy> {
+  late List<Bookmark> list;
+  late List<VacancyData> vacancies;
+  @override
+  void initState() {
+    list = getIt<AuthenticationRepository>().bookmarks;
+    vacancies = getIt<DataRepository>().vacancies;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Icon(
-          Icons.collections_bookmark,
-          size: 60,
-          color: Theme.of(context).colorScheme.onBackground,
-        ),
-        Text(
-          "Нет отложенных вакансий",
-          style: Theme.of(context).textTheme.caption,
-        )
+        if (list.isEmpty)
+          Icon(
+            Icons.collections_bookmark,
+            size: 60,
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+        if (list.isEmpty)
+          Text(
+            "Нет отложенных вакансий",
+            style: Theme.of(context).textTheme.caption,
+          ),
+        if (list.isNotEmpty)
+          Expanded(
+              child: ListView(
+            children: list.map((e) {
+              VacancyData data = vacancies
+                  .firstWhere(((element) => element.id == e.vacancyId));
+              return ListTile(
+                trailing: IconButton(
+                  icon: Icon(Icons.remove_circle_outline),
+                  onPressed: () async {
+                    ApiClient client = ApiClient();
+                    await client.deleteBookmark(
+                        e, getIt<AuthenticationRepository>().auth?.token ?? "");
+
+                    await getIt<AuthenticationRepository>().getBookmarks();
+                    setState(() {
+                      list = getIt<AuthenticationRepository>().bookmarks;
+                      vacancies = getIt<DataRepository>().vacancies;
+                    });
+                  },
+                ),
+                onTap: () {
+                  Routemaster.of(context).push(
+                      "/vacancy/${vacancies.indexWhere((element) => element.id == e.vacancyId)}");
+                },
+                title: Text(data.title),
+              );
+            }).toList(),
+          )),
       ]),
     );
   }

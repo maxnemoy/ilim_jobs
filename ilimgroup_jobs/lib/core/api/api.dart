@@ -4,6 +4,7 @@ import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_type_data.dart';
 import 'package:ilimgroup_jobs/core/models/response_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/auth_data.dart';
+import 'package:ilimgroup_jobs/core/models/user/bookmark/bookmark_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/resume/resume_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/user_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_category_data.dart';
@@ -125,4 +126,22 @@ abstract class ApiClient {
 
   @GET("/vacancy/categories")
   Future<List<VacancyCategoryData>> getAllVacancyCategories();
+
+  ///[BOOKMARK]
+  @PUT("/v1/bookmark")
+  Future<RespData> createBookmark(
+      @Body() Bookmark bookmark, @Header("Authorization") String token);
+
+  @DELETE("/v1/bookmark")
+  Future<RespData> deleteBookmark(
+      @Body() Bookmark category, @Header("Authorization") String token);
+
+  @GET("/bookmarks")
+  Future<List<Bookmark>> getAllBookmarks();
+
+  @GET("/bookmark/user/{id}")
+  Future<List<Bookmark>> getBookmarksByUser(@Path() int id);
+
+  @GET("/bookmark/vacancy/{id}")
+  Future<List<Bookmark>> getBookmarksByVacancy(@Path() int id);
 }
