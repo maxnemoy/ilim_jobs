@@ -35,13 +35,13 @@ class DataRepository {
   List<int> get selectedTags => _selectedTags;
 
   Future<void> importData() async {
-    String token = getIt<AuthenticationRepository>().auth?.token ?? "";
+    // String token = getIt<AuthenticationRepository>().auth?.token ?? "";
 
-    for (String category in tmpData.categories) {
-      await _client.createVacancyCategory(
-          VacancyCategoryData(category: category, description: ""), token);
-    }
-    await updateCategories();
+    // for (String category in tmpData.categories) {
+    //   await _client.createVacancyCategory(
+    //       VacancyCategoryData(category: category, description: ""), token);
+    // }
+    // await updateCategories();
 
     // for (TmpVacancy vacancy in tmpData.vacancies) {
     //   await _client.createVacancy(
@@ -66,7 +66,7 @@ class DataRepository {
     //           contacts: vacancy.contacts),
     //       token);
     // }
-    await updateVacancies();
+    //await updateVacancies();
   }
 
   FutureOr<void> updateCategories() async {

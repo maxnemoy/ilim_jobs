@@ -29,7 +29,7 @@ class AuthenticationRepository {
     // try {
     _auth = await _client.authentication(user);
     await getBookmarks();
-    await getResume();
+    //await getResume();
     // } catch (_) {
     //   return;
     // }
