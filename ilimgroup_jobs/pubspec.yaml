@@ -52,3 +52,9 @@ flutter:
     - assets/images/9.jpg
     - assets/images/10.jpg
     - assets/images/11.jpg
+    - assets/initial data/users.json
+    - assets/initial data/tags.json
+    - assets/initial data/categories.json
+    - assets/initial data/posts.json
+    - assets/initial data/comments.json
+    - assets/initial data/vacancy.json
