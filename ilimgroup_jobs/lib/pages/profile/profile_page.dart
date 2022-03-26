@@ -373,7 +373,7 @@ class _ResumeViewerState extends State<ResumeViewer> {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.only(top: 20),
+        padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Center(
             child: ConstrainedBox(

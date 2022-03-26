@@ -264,7 +264,9 @@ class CommentZone extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const SizedBox(width: 20,),
+                      const SizedBox(
+                        width: 20,
+                      ),
                       const Text("Истории успеха"),
                       const Spacer(),
                       IconButton(
@@ -287,7 +289,10 @@ class CommentZone extends StatelessWidget {
                 Expanded(
                   child: PageView(
                     controller: controller,
-                    children: getIt<DataRepository>().comments.map((e) => CommentView(comment: e)).toList(),
+                    children: getIt<DataRepository>()
+                        .comments
+                        .map((e) => CommentView(comment: e))
+                        .toList(),
                   ),
                 ),
               ],
@@ -306,15 +311,49 @@ class CommentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.all(20.0),
-      child: Row(
+      child: size.height > size.width ? 
+      SingleChildScrollView(
+        child: Column(children: [
+          SizedBox(
+            height: 200,
+            child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              UserAvatar(
+                url: comment.avatar,
+                whitBorder: false,
+              ),
+              Text(
+                comment.username,
+                style: Theme.of(context).textTheme.titleMedium,
+              )
+            ],
+          ),
+          ),
+          const Divider(),
+          Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: ZefyrEditor(
+                    readOnly: true,
+                    showCursor: false,
+                    focusNode: focusNode,
+                    controller: ZefyrController(
+                        NotusDocument.fromJson(jsonDecode(comment.body))))),
+        ]),
+      ):
+      Row(
         children: [
           Expanded(
               child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              UserAvatar(url: comment.avatar, whitBorder: false,),
+              UserAvatar(
+                url: comment.avatar,
+                whitBorder: false,
+              ),
               Text(
                 comment.username,
                 style: Theme.of(context).textTheme.titleMedium,
@@ -327,10 +366,11 @@ class CommentView extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: ZefyrEditor(
-                  readOnly: true,
-                  showCursor: false,
-                  focusNode: focusNode,
-                  controller: ZefyrController(NotusDocument.fromJson(jsonDecode(comment.body)))),
+                    readOnly: true,
+                    showCursor: false,
+                    focusNode: focusNode,
+                    controller: ZefyrController(
+                        NotusDocument.fromJson(jsonDecode(comment.body)))),
               ))
         ],
       ),
