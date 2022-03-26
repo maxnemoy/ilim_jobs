@@ -45,3 +45,10 @@ class SaveCommentEvent extends DataEvent {
 
   const SaveCommentEvent(this.data, this.token);
 }
+
+class SaveVacancyRequestEvent extends DataEvent {
+  final VacancyRequestData data;
+  final String token;
+
+  const SaveVacancyRequestEvent(this.data, this.token);
+}

@@ -7,6 +7,7 @@ import 'package:ilimgroup_jobs/core/models/user/auth_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/bookmark/bookmark_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/resume/resume_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/user_data.dart';
+import 'package:ilimgroup_jobs/core/models/vacancy/request/vacancy_request_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_category_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_tag_data.dart';
@@ -114,6 +115,22 @@ abstract class ApiClient {
 
   @GET("/vacancy/tags")
   Future<List<VacancyTagData>> getAllVacancyTags();
+
+  ///[VACANCY.requests]
+  @PUT("/v1/vacancy/request")
+  Future<RespData> createVacancyRequest(@Body() VacancyRequestData requestData,
+      @Header("Authorization") String token);
+
+  @PATCH("/v1/vacancy/request")
+  Future<RespData> updateVacancyRequest(
+      @Body() VacancyRequestData tag, @Header("Authorization") String token);
+
+  @GET("/vacancy/requests")
+  Future<List<VacancyRequestData>> getAllVacancyRequests();
+  @GET("/vacancy/requests/user/{id}")
+  Future<List<VacancyRequestData>> getAllVacancyRequestsByUser(@Path() int id);
+  @GET("/vacancy/requests/{id}")
+  Future<List<VacancyRequestData>> getAllVacancyRequestsByVacancy(@Path() int id);
 
   ///[VACANCY.category]
   @PUT("/v1/vacancy/category")

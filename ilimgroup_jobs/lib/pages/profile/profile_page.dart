@@ -11,6 +11,7 @@ import 'package:ilimgroup_jobs/core/logic/utils/file_uploader.dart';
 import 'package:ilimgroup_jobs/core/models/user/auth_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/bookmark/bookmark_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/resume/resume_data.dart';
+import 'package:ilimgroup_jobs/core/models/vacancy/request/vacancy_request_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
 import 'package:ilimgroup_jobs/pages/discover/discover_page.dart';
 import 'package:intl/intl.dart';
@@ -212,24 +213,61 @@ class UserProfile extends StatelessWidget {
   }
 }
 
-class RespVacancy extends StatelessWidget {
+Map<int, String> vacancyStatus = {
+  1: "На рассмотрении",
+  2: "Собеседование",
+  3: "Одобрено",
+  4: "Отклонено",
+};
+
+class RespVacancy extends StatefulWidget {
   const RespVacancy({Key? key}) : super(key: key);
 
   @override
+  State<RespVacancy> createState() => _RespVacancyState();
+}
+
+class _RespVacancyState extends State<RespVacancy> {
+  late List<VacancyRequestData> list;
+  late List<VacancyData> vacancies;
+  @override
+  void initState() {
+    list = getIt<DataRepository>().requests;
+    vacancies = getIt<DataRepository>().vacancies;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Icon(
-          Icons.fact_check,
-          size: 60,
-          color: Theme.of(context).colorScheme.onBackground,
-        ),
-        Text(
-          "Здесь появятся вакансии, на которые вы отправите отклик.",
-          style: Theme.of(context).textTheme.caption,
-        )
-      ]),
-    );
+    return list.isEmpty
+        ? Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(
+                Icons.fact_check,
+                size: 60,
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+              Text(
+                "Здесь появятся вакансии, на которые вы отправите отклик.",
+                style: Theme.of(context).textTheme.caption,
+              )
+            ]),
+          )
+        : Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListView(
+              children: list
+                  .map((e) => ListTile(
+                    onTap: ()=>Routemaster.of(context).push("/vacancy/${e.vacancyId}") ,
+                        title: Text(vacancies
+                            .firstWhere((element) => element.id == e.vacancyId)
+                            .title),
+                        trailing: Text(vacancyStatus[e.status]!),
+                      ))
+                  .toList(),
+            ),
+        );
   }
 }
 

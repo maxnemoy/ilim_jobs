@@ -2,15 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ilimgroup_jobs/components/page_header.dart';
 import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/api/api.dart';
 import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
+import 'package:ilimgroup_jobs/core/logic/data/bloc.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/tag2icon.dart';
 import 'package:ilimgroup_jobs/core/logic/utils/utils.dart';
 import 'package:ilimgroup_jobs/core/models/user/auth_data.dart';
 import 'package:ilimgroup_jobs/core/models/user/bookmark/bookmark_data.dart';
+import 'package:ilimgroup_jobs/core/models/vacancy/request/vacancy_request_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:zefyrka/zefyrka.dart';
@@ -52,10 +55,10 @@ class _DetailPageState extends State<VacanciesViewer> {
         -1;
   }
 
-  Bookmark get bookmark =>getIt<AuthenticationRepository>()
-            .bookmarks
-            .firstWhere((element) => element.vacancyId == data.id,
-             orElse: ()=>Bookmark(userId: 0, vacancyId: 0));
+  Bookmark get bookmark => getIt<AuthenticationRepository>()
+      .bookmarks
+      .firstWhere((element) => element.vacancyId == data.id,
+          orElse: () => Bookmark(userId: 0, vacancyId: 0));
 
   @override
   Widget build(BuildContext context) {
@@ -132,8 +135,7 @@ class _DetailPageState extends State<VacanciesViewer> {
                                         authData!.token);
                                   } else {
                                     await client.deleteBookmark(
-                                        bookmark,
-                                        authData!.token);
+                                        bookmark, authData!.token);
                                   }
                                   await getIt<AuthenticationRepository>()
                                       .getBookmarks();
@@ -171,9 +173,11 @@ class _DetailPageState extends State<VacanciesViewer> {
                       ),
                     ),
                   )),
-              const Align(
+              Align(
                 alignment: Alignment.bottomCenter,
-                child: _BottomBar(),
+                child: _BottomBar(
+                  vacancyData: data,
+                ),
               ),
             ],
           ),
@@ -243,48 +247,122 @@ class _TagsBar extends StatelessWidget {
   }
 }
 
-class _BottomBar extends StatelessWidget {
-  const _BottomBar({
-    Key? key,
-  }) : super(key: key);
+class _BottomBar extends StatefulWidget {
+  final VacancyData vacancyData;
+  const _BottomBar({Key? key, required this.vacancyData}) : super(key: key);
+
+  @override
+  State<_BottomBar> createState() => _BottomBarState();
+}
+
+class _BottomBarState extends State<_BottomBar> {
+  bool isRequested = false;
+
+  @override
+  void initState() {
+    loadData();
+    super.initState();
+  }
+
+  void loadData() {
+    List<VacancyRequestData> requests = getIt<DataRepository>().requests;
+    if (requests.indexWhere(
+            (element) => element.vacancyId == widget.vacancyData.id) >
+        -1) {
+      setState(() {
+        isRequested = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 87,
-      decoration: BoxDecoration(
-          color: Colors.black,
-          gradient: LinearGradient(stops: [
-            0,
-            1
-          ], colors: [
-            Color(0xff121421),
-            Colors.transparent,
-          ], begin: Alignment.bottomCenter, end: Alignment.topCenter)),
-      child: Center(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(16),
-            onTap: () {},
-            child: Ink(
-              decoration: BoxDecoration(
-                color: Color(0xff4A80F0),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: ElevatedButton(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
-                  child: Text(
-                    "Откликнуться",
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
+    return BlocListener<DataBloc, DataState>(
+      listener: (context, state) {
+        if (state is DataLoadedState) {
+          setState(() {
+            loadData();
+          });
+        }
+      },
+      child: Container(
+        height: 87,
+        decoration: BoxDecoration(
+            color: Colors.black,
+            gradient: LinearGradient(stops: [
+              0,
+              1
+            ], colors: [
+              Color(0xff121421),
+              Colors.transparent,
+            ], begin: Alignment.bottomCenter, end: Alignment.topCenter)),
+        child: Center(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () {},
+              child: Ink(
+                decoration: BoxDecoration(
+                  color: Color(0xff4A80F0),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Tooltip(
+                  message: isRequested
+                      ? "Вы уже отправляли отклик на эту вакансию"
+                      : "Отправить отклик",
+                  child: ElevatedButton(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 40),
+                      child: Text(
+                        "Откликнуться",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    onPressed: !isRequested
+                        ? () {
+                            AuthData? authData =
+                                getIt<AuthenticationRepository>().auth;
+                            if (authData == null) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "Необходимо авторизоваться",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1,
+                                          ),
+                                          TextButton(
+                                            child: Text("Войти"),
+                                            onPressed: () {
+                                              Routemaster.of(context)
+                                                  .push("/profile");
+                                            },
+                                          )
+                                        ],
+                                      )));
+                            } else {
+                              context.read<DataBloc>().add(
+                                  SaveVacancyRequestEvent(
+                                      VacancyRequestData(
+                                          userId: authData.userId,
+                                          vacancyId: widget.vacancyData.id!,
+                                          status: 1),
+                                      authData.token));
+                            }
+                          }
+                        : null,
                   ),
                 ),
-                onPressed: () {},
               ),
             ),
           ),

@@ -6,6 +6,7 @@ import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/logic/data/repository.dart';
 import 'package:ilimgroup_jobs/core/models/post/comments/comment_data.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
+import 'package:ilimgroup_jobs/core/models/vacancy/request/vacancy_request_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
 
 part 'state.dart';
@@ -13,21 +14,16 @@ part 'event.dart';
 
 class DataBloc extends Bloc<DataEvent, DataState> {
   DataBloc() : super(DataInitialState()) {
-    on<ImportDataEvent>(_onGetPlaces);
     on<LoadDataEvent>(_onLoadData);
     on<SelectVacancyCategory>(_onCategorySelect);
     on<SelectVacancyTag>(_onTagSelect);
     on<SaveVacancyEvent>(_onSaveVacancy);
     on<SavePostEvent>(_onSavePost);
     on<SaveCommentEvent>(_onSaveComment);
+    on<SaveVacancyRequestEvent>(_onSaveVacancyRequest);
   }
 
   final DataRepository _repository = getIt<DataRepository>();
-
-  FutureOr<void> _onGetPlaces(
-      ImportDataEvent event, Emitter<DataState> emitter) async {
-    _repository.importData();
-  }
 
   FutureOr<void> _onLoadData(
       LoadDataEvent event, Emitter<DataState> emitter) async {
@@ -86,6 +82,19 @@ class DataBloc extends Bloc<DataEvent, DataState> {
       await _repository.upgradeComment(event.data, event.token);
     } else {
       await _repository.createComment(event.data, event.token);
+    }
+    await _repository.loadData();
+    emitter(DataSavedState());
+    emitter(DataLoadedState());
+  }
+
+  FutureOr<void> _onSaveVacancyRequest(
+      SaveVacancyRequestEvent event, Emitter<DataState> emitter) async {
+    emitter(DataIsLoadingState());
+    if (event.data.id != null) {
+      await _repository.upgradeRequest(event.data, event.token);
+    } else {
+      await _repository.createRequest(event.data, event.token);
     }
     await _repository.loadData();
     emitter(DataSavedState());

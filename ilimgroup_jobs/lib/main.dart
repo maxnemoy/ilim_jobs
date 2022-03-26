@@ -14,6 +14,7 @@ import 'package:ilimgroup_jobs/pages/profile/post_manager/post_editor.dart';
 import 'package:ilimgroup_jobs/pages/profile/post_manager/post_manage.dart';
 import 'package:ilimgroup_jobs/pages/post/post_viewer.dart';
 import 'package:ilimgroup_jobs/pages/profile/profile_page.dart';
+import 'package:ilimgroup_jobs/pages/profile/vacancy_manager/response_manager/response_manager.dart';
 import 'package:ilimgroup_jobs/pages/profile/vacancy_manager/vacancy_editor.dart';
 import 'package:ilimgroup_jobs/pages/profile/vacancy_manager/vacancy_manager.dart';
 import 'package:ilimgroup_jobs/pages/vacancies_viewer/vacancies_viewer.dart';
@@ -46,6 +47,7 @@ final routes = RouteMap(
     '/post_manager': (info)=> getIt<AuthenticationRepository>().auth != null ? const MaterialPage(child: PostManager()) : const MaterialPage(child: AuthPage()),
     '/post_manager/edit/:id': (info)=> getIt<AuthenticationRepository>().auth != null ? MaterialPage(child: PostEditor(id: info.pathParameters["id"])) : const MaterialPage(child: AuthPage()),
     '/vacancy/:id': (info) => MaterialPage(child: VacanciesViewer(index: info.pathParameters["id"] ?? "0", recommended: info.queryParameters["rec"]!= null ? info.queryParameters["rec"]!.toLowerCase() == "true" : false,)),
+    '/response_manager/:id': (info)=> getIt<AuthenticationRepository>().auth != null ? MaterialPage(child: ResponseManage(vacancyId: info.pathParameters["id"] ?? "0",)) : const MaterialPage(child: AuthPage()),
   },
   onUnknownRoute: (route){
     return const MaterialPage(child: NotFoundPage());

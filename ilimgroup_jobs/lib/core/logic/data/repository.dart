@@ -1,14 +1,12 @@
 import 'dart:async';
 
-import 'package:ilimgroup_jobs/config/singleton.dart';
 import 'package:ilimgroup_jobs/core/api/api.dart';
-import 'package:ilimgroup_jobs/core/logic/authentication/repository.dart';
 import 'package:ilimgroup_jobs/core/models/post/comments/comment_data.dart';
 import 'package:ilimgroup_jobs/core/models/post/post_data.dart';
+import 'package:ilimgroup_jobs/core/models/vacancy/request/vacancy_request_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_category_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_data.dart';
 import 'package:ilimgroup_jobs/core/models/vacancy/vacancy_tag_data.dart';
-import 'package:ilimgroup_jobs/data/tmp_import_data/tmp_data.dart';
 
 class DataRepository {
   final ApiClient _client = ApiClient();
@@ -18,6 +16,7 @@ class DataRepository {
   List<VacancyData>? _vacancyData;
   List<PostData>? _postData;
   List<CommentData>? _comments;
+  List<VacancyRequestData>? _requests;
 
   List<VacancyData>? _vacancyDataSorted;
 
@@ -27,47 +26,13 @@ class DataRepository {
       _vacancyDataSorted != null ? _vacancyDataSorted! : _vacancyData ?? [];
   List<PostData> get posts => _postData ?? [];
   List<CommentData> get comments => _comments ?? [];
+  List<VacancyRequestData> get requests => _requests ?? [];
 
   final List<int> _selectedCategory = [];
   final List<int> _selectedTags = [];
 
   List<int> get selectedCategory => _selectedCategory;
   List<int> get selectedTags => _selectedTags;
-
-  Future<void> importData() async {
-    // String token = getIt<AuthenticationRepository>().auth?.token ?? "";
-
-    // for (String category in tmpData.categories) {
-    //   await _client.createVacancyCategory(
-    //       VacancyCategoryData(category: category, description: ""), token);
-    // }
-    // await updateCategories();
-
-    // for (TmpVacancy vacancy in tmpData.vacancies) {
-    //   await _client.createVacancy(
-    //       VacancyData(
-    //           published: true,
-    //           title: vacancy.title,
-    //           body: vacancy.description,
-    //           responsibilities: vacancy.responsibilities,
-    //           requirements: vacancy.requirements,
-    //           terms: vacancy.terms,
-    //           tags: [],
-    //           category: _vacancyCategories!
-    //                   .firstWhere(
-    //                     (element) => element.category
-    //                         .toLowerCase()
-    //                         .contains(vacancy.description.toLowerCase()),
-    //                     orElse: () =>
-    //                         VacancyCategoryData(category: "", description: ""),
-    //                   )
-    //                   .id ??
-    //               0,
-    //           contacts: vacancy.contacts),
-    //       token);
-    // }
-    //await updateVacancies();
-  }
 
   FutureOr<void> updateCategories() async {
     _vacancyCategories = await _client.getAllVacancyCategories();
@@ -89,12 +54,17 @@ class DataRepository {
     _comments = await _client.getAllComments();
   }
 
+  FutureOr<void> updateRequests() async {
+    _requests = await _client.getAllVacancyRequests();
+  }
+
   FutureOr<void> loadData() async {
     await updateCategories();
     await updateVacancies();
     await updateTags();
     await updatePosts();
     await updateComments();
+    await updateRequests();
   }
 
   FutureOr<void> sortByCategory(List<int> cats) async {
@@ -148,5 +118,13 @@ class DataRepository {
 
   FutureOr<void> upgradeComment(CommentData data, String token) async {
     await _client.updateComment(data, token);
+  }
+
+  FutureOr<void> createRequest(VacancyRequestData data, String token) async {
+    await _client.createVacancyRequest(data, token);
+  }
+
+  FutureOr<void> upgradeRequest(VacancyRequestData data, String token) async {
+    await _client.updateVacancyRequest(data, token);
   }
 }

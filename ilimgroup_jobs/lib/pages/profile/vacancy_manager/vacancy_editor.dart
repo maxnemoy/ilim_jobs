@@ -51,6 +51,13 @@ class _VacancyEditorState extends State<VacancyEditor> {
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
           title: const Text("Добавить вакансию"),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Routemaster.of(context).push("/response_manager/${data.id}");
+                },
+                icon: Icon(Icons.inbox_rounded))
+          ],
           leading: IconButton(
             icon: const Icon(
               Icons.chevron_left,
@@ -209,7 +216,8 @@ class _VacancyEditorState extends State<VacancyEditor> {
                         children: [
                           BlocListener<DataBloc, DataState>(
                             listener: (context, state) {
-                              if (state is DataSavedState) Routemaster.of(context).pop();
+                              if (state is DataSavedState)
+                                Routemaster.of(context).pop();
                             },
                             child: ElevatedButton(
                                 onPressed: () {

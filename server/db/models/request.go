@@ -26,7 +26,7 @@ func (r *Request) Update(conn *pg.DB) error {
 	//*r.DeleteAt = time.Now()
 	r.UpgradeAt = time.Now()
 	_, err := conn.Model(r).Where("id = ?0", r.ID).
-		Set("update_at = ?0", r.DeleteAt).
+		Set("upgrade_at = ?0", r.DeleteAt).
 		Set("status = ?0", r.Status).
 		Update()
 	if err != nil {
