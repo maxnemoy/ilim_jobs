@@ -54,8 +54,7 @@ class DiscoverPage extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 28),
                     child: ZoneTitle(
                       text: "Новые",
-                      onShowAllClick: () {
-                      },
+                      onShowAllClick: () {},
                     ),
                   ),
                 const SizedBox(height: 16),
@@ -215,6 +214,7 @@ class _DiscoveryHeader extends StatelessWidget {
             InkWell(
               borderRadius: BorderRadius.circular(360),
               onTap: () {
+                Routemaster.of(context).push("/init");
               },
               child: const SizedBox(
                 height: 35,
