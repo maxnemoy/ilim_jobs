@@ -22,24 +22,20 @@ jobs:
        with:
         channel: 'stable' # or: 'beta' or 'master'
      - run: | 
-        cd ./ilimgroup_jobs
         flutter pub get
         flutter build web
         touch ./build/web/static
         cd ./build/web
         ls
-     - uses: actions/checkout@v2
-       with:
-           fetch-depth: 0
- 
+     - working-directory: ./ilimgroup_jobs
        
      - uses: idoberko2/dokku-deploy-github-action@v1
        with:
-         working-directory: ./ilimgroup_jobs/build/web
          git-push-flags: '--force'
          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
          dokku-host: '51.250.38.241'
          app-name: 'ilimjob'
+     - working-directory: ./ilimgroup_jobs/build/web
      
      
           
