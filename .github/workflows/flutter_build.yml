@@ -31,7 +31,7 @@ jobs:
         cd ./build/web
         ls
         
-     - name: Deploy to GH Pages
+     - name: Push to static branch
        run: |
         cd build/web
         git init
@@ -49,19 +49,34 @@ jobs:
    runs-on: ubuntu-latest
    needs: [build]
    steps:
-    - uses: actions/checkout@v2
+    - name: Cloning repo
+      uses: actions/checkout@v2
       with:
-       fetch-depth: 0
-       ref: 'static'
-    - id: deploy
-      name: Deploy to dokku
-      uses: idoberko2/dokku-deploy-github-action@v1
+        fetch-depth: 0
+        ref: 'static'
+    - name: Push to dokku
+      uses: dokku/github-action@master
       with:
-       git-push-flags: '--force'
-       remote-branch: 'static'
-       ssh-private-key: ${{ secrets.DEPLOY_KEY }}
-       dokku-host: '51.250.38.241'
-       app-name: 'ilimjob'
+        git_push_flags: '--force'
+        git_remote_url: 'ssh://maxnemoy@51.250.38.241:22/ilimjob'
+        ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+   
+   
+   
+   
+   #steps:
+   # - uses: actions/checkout@v3
+   #   with:
+   #    ref: 'static'
+   #    fetch-depth: 0
+   # - id: deploy
+   #   name: Deploy to dokku
+   #   uses: idoberko2/dokku-deploy-github-action@v1
+   #   with:
+   #    git-push-flags: '--force'
+   #    ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+   #    dokku-host: '51.250.38.241'
+   #    app-name: 'ilimjob'
        
      
           
