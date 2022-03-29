@@ -27,7 +27,7 @@ jobs:
      - run: | 
         flutter pub get
         flutter build web
-        touch ./build/web/static
+        touch ./build/web/.static
         cd ./build/web
         ls
         
