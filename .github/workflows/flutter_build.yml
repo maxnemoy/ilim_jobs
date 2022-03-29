@@ -28,14 +28,11 @@ jobs:
         flutter pub get
         flutter build web
         touch ./build/web/.static
-        cd ./build/web
-        mkdir ./.github
-        mkdir ./.github/workflows
-        touch ./.github/workflows/deploy.yaml
-        echo $CONF >> ./.github/workflows/deploy.yaml      
+        cd ./build/web   
         
      - name: Push to static branch
        run: |
+        cp ../.github/workflows/deploy.yml build/web/.github/workflows/deploy.yml
         cd build/web
         git init
         git config --global user.email maxnemoy@gmail.com
