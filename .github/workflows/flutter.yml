@@ -1,0 +1,48 @@
+name: flutter deploy
+
+on: #trigger on push & PR to this branch only
+  push:
+    branches:
+      - master
+    paths:
+      - ilimgroup_jobs/**
+  pull_request:
+    branches:
+      - master
+    paths:
+      - ilimgroup_jobs/**
+
+env:
+  JAVA_VERSION: "12.x" #change this version if you want
+  FLUTTER_VERSION: "2.10.2" #set here your version
+  FLUTTER_CHANNEL: "stable" #set here your channel
+
+jobs:         
+  publish:
+    name: Build
+    runs-on: ubuntu-latest #change it to another OS if you want
+    steps:
+      - name: BUILD
+        working-directory: ./ilimgroup_jobs
+      - uses: actions/checkout@v1
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: ${{env.FLUTTER_CHANNEL}}
+      - run: |
+          flutter pub get
+          flutter build web --release
+          cd build/web
+          touch .static
+
+      - uses: actions/checkout@v2
+        with:
+            fetch-depth: 0     
+      - name: Deploy to dokku
+        uses: idoberko2/dokku-deploy-github-action@v1
+        with:
+          working-directory: ./build/web
+          git-push-flags: '--force'
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+          dokku-host: '51.250.38.241'
+          app-name: 'ilimgroup'
+          
