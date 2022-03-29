@@ -21,5 +21,11 @@ jobs:
      - uses: subosito/flutter-action@v2
        with:
         channel: 'stable' # or: 'beta' or 'master'
-     - run: flutter --version
+     - run: flutter pub get
+     - run: flutter build web
+     - run: touch ./build/web/.static
+     - run: cd ./build/web
+     - run: ls
+     
+     
           
