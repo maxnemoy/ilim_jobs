@@ -37,7 +37,6 @@ jobs:
          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
          dokku-host: '51.250.38.241'
          app-name: 'ilimjob'
-     - working-directory: ./ilimgroup_jobs/build/web
      
      
           
