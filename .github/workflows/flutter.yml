@@ -21,6 +21,7 @@ jobs:
      - uses: subosito/flutter-action@v2
        with:
         channel: 'stable' # or: 'beta' or 'master'
+     - run: cd ./ilimgroup_jobs
      - run: flutter pub get
      - run: flutter build web
      - run: touch ./build/web/.static
