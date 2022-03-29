@@ -16,6 +16,9 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    defaults:
+     run: 
+      working-directory: ./ilimgroup_jobs
     steps:
      - uses: actions/checkout@v2
      - uses: subosito/flutter-action@v2
@@ -27,7 +30,6 @@ jobs:
         touch ./build/web/static
         cd ./build/web
         ls
-     - working-directory: ./ilimgroup_jobs
        
      - uses: idoberko2/dokku-deploy-github-action@v1
        with:
