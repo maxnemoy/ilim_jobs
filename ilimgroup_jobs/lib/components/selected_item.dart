@@ -27,12 +27,12 @@ class SelectedItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               color:
                   selected ? 
-                  const Color(0xff4A80F0) : 
-                  const Color(0xff1C2031),
+                  Theme.of(context).colorScheme.onBackground : 
+                  Theme.of(context).colorScheme.surface,
               boxShadow: selected
                   ? [
                       BoxShadow(
-                          color: const Color(0xff4A80F0).withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
                           offset: const Offset(0, 4),
                           blurRadius: 10),
                     ]
@@ -44,8 +44,11 @@ class SelectedItem extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
                 child: Text(
                   category?.category ?? "",
-                  style: const TextStyle(
-                      color: Colors.white,
+                  style: !selected ? TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 17,
+                      fontWeight: FontWeight.normal) : TextStyle(
+                      color: Theme.of(context).colorScheme.surface,
                       fontSize: 17,
                       fontWeight: FontWeight.normal),
                 ),

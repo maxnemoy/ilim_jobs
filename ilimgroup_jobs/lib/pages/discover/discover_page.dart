@@ -198,19 +198,27 @@ class _DiscoveryHeader extends StatelessWidget {
     return Column(
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            // InkWell(
-            //   borderRadius: BorderRadius.circular(360),
-            //   onTap: () {
-            //     Scaffold.of(context).openDrawer();
-            //   },
-            //   child: const SizedBox(
-            //     height: 35,
-            //     width: 35,
-            //     child: Center(child: Icon(Icons.menu)),
-            //   ),
-            // ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                   AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: MediaQuery.of(context).size.width > 800 ? Container() : Image.asset("assets/logo.png", filterQuality: FilterQuality.medium, height: 40,),
+                  ),
+                    Text("Найди работу своей мечты",
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onBackground,
+                      fontSize: 34,
+                      //overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
             InkWell(
               borderRadius: BorderRadius.circular(360),
               onTap: () {
@@ -221,20 +229,6 @@ class _DiscoveryHeader extends StatelessWidget {
                 width: 35,
                 child: Center(child: Icon(Icons.search)),
               ),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: Text("Найди работу своей мечты",
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.onBackground,
-                      fontSize: 34,
-                      fontWeight: FontWeight.bold)),
             ),
           ],
         ),
@@ -260,7 +254,7 @@ class ZoneTitle extends StatelessWidget {
         Text(
           text,
           style: TextStyle(
-              color: Theme.of(context).colorScheme.onBackground,
+              color: Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.w500,
               fontSize: 14),
         ),

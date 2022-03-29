@@ -188,6 +188,8 @@ class UserProfile extends StatelessWidget {
       child: Expanded(
         child: Column(children: [
           TabBar(
+            unselectedLabelColor: Theme.of(context).colorScheme.secondary,
+            labelColor: Theme.of(context).colorScheme.primary,
             indicatorColor: Theme.of(context).colorScheme.primary,
             tabs: const [
               Tab(
@@ -201,6 +203,7 @@ class UserProfile extends StatelessWidget {
               Tab(
                 icon: Icon(Icons.contact_mail_rounded),
                 text: "Резюме",
+                
               ),
             ],
           ),

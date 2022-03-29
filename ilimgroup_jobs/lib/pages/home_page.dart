@@ -65,11 +65,17 @@ class _DesktopNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return NavigationRail(
         backgroundColor: Theme.of(context).colorScheme.background,
+        unselectedIconTheme: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+        unselectedLabelTextStyle: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
         extended: MediaQuery.of(context).size.width > 1300,
         onDestinationSelected: (v) => tabState.controller.index = v,
-        leading: const Padding(
-          padding: EdgeInsets.all(20.0),
-          child: FlutterLogo(),
+        leading: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SizedBox(
+            height: 30,
+            width: 30,
+            child: AnimatedSwitcher(duration: const Duration(milliseconds: 100),
+            child: MediaQuery.of(context).size.width > 1300 ? Image.asset("assets/logo.png", filterQuality: FilterQuality.medium,): Image.asset("assets/logo-compact.png", filterQuality: FilterQuality.medium,))),
         ),
         destinations: List.generate(
           pages.length,

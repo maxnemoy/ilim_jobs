@@ -111,13 +111,13 @@ class _VacancyCardState extends State<VacancyCard> {
                               const SizedBox(
                                 height: 5,
                               ),
-                              Text(getCategoryNameById(widget.data.category).toUpperCase(), style: Theme.of(context).textTheme.caption,)
+                              Text(getCategoryNameById(widget.data.category).toUpperCase(), style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.surface),)
                             ],
                           ),
                           Row(
                             children: widget.data.tags.map((e) => Padding(
                               padding: const EdgeInsets.only(right: 10.0),
-                              child: Tooltip(message: getIt<DataRepository>().tags.firstWhere((element) => element.id == e).tag, child: Icon(tag2icon(e))),
+                              child: Tooltip(message: getIt<DataRepository>().tags.firstWhere((element) => element.id == e).tag, child: Icon(tag2icon(e), color: Theme.of(context).colorScheme.surface,)),
                             )).toList(),
                           )
                         ],

@@ -84,8 +84,8 @@ class _DetailPageState extends State<VacanciesViewer> {
                       child: Material(
                         color: Colors.transparent,
                         child: Text(data.title,
-                            style: const TextStyle(
-                                color: Colors.white,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary,
                                 fontSize: 34,
                                 fontWeight: FontWeight.bold)),
                       ),
@@ -236,7 +236,7 @@ class _TagsBar extends StatelessWidget {
                     width: 56,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Colors.white.withOpacity(0.1),
+                      color: Theme.of(context).colorScheme.surface,
                     ),
                     child: Center(child: Icon(tag2icon(e))),
                   ),
@@ -287,15 +287,6 @@ class _BottomBarState extends State<_BottomBar> {
       },
       child: Container(
         height: 87,
-        decoration: BoxDecoration(
-            color: Colors.black,
-            gradient: LinearGradient(stops: [
-              0,
-              1
-            ], colors: [
-              Color(0xff121421),
-              Colors.transparent,
-            ], begin: Alignment.bottomCenter, end: Alignment.topCenter)),
         child: Center(
           child: Material(
             color: Colors.transparent,

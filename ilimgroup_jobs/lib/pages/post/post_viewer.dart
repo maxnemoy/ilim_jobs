@@ -61,8 +61,8 @@ class _DetailPageState extends State<PostViewer> {
                     child: Material(
                       color: Colors.transparent,
                       child: Text(data.title,
-                          style: const TextStyle(
-                              color: Colors.white,
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
                               fontSize: 34,
                               fontWeight: FontWeight.bold)),
                     ),
@@ -267,22 +267,22 @@ class CommentZone extends StatelessWidget {
                       const SizedBox(
                         width: 20,
                       ),
-                      const Text("Истории успеха"),
+                      Text("Истории успеха", style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).colorScheme.surface),),
                       const Spacer(),
                       IconButton(
                           onPressed: () {
                             controller.previousPage(
-                                duration: Duration(milliseconds: 200),
+                                duration: const Duration(milliseconds: 200),
                                 curve: Curves.bounceIn);
                           },
-                          icon: Icon(Icons.chevron_left)),
+                          icon: Icon(Icons.chevron_left, color: Theme.of(context).colorScheme.surface,)),
                       IconButton(
                           onPressed: () {
                             controller.nextPage(
-                                duration: Duration(milliseconds: 200),
+                                duration: const Duration(milliseconds: 200),
                                 curve: Curves.bounceIn);
                           },
-                          icon: Icon(Icons.chevron_right_rounded)),
+                          icon: Icon(Icons.chevron_right_rounded, color: Theme.of(context).colorScheme.surface)),
                     ],
                   ),
                 ),
@@ -326,6 +326,7 @@ class CommentView extends StatelessWidget {
                 url: comment.avatar,
                 whitBorder: false,
               ),
+              const SizedBox(height: 20,),
               Text(
                 comment.username,
                 style: Theme.of(context).textTheme.titleMedium,
@@ -354,6 +355,7 @@ class CommentView extends StatelessWidget {
                 url: comment.avatar,
                 whitBorder: false,
               ),
+              const SizedBox(height: 20,),
               Text(
                 comment.username,
                 style: Theme.of(context).textTheme.titleMedium,

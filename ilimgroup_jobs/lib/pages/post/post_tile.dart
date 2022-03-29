@@ -63,6 +63,7 @@ class _PostTileState extends State<PostTile> {
                           child: Image.network(
                             widget.data.assets[0],
                             fit: BoxFit.cover,
+                            filterQuality: FilterQuality.medium,
                           ),
                         ),
                       )),

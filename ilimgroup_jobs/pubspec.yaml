@@ -23,6 +23,7 @@ dependencies:
   zefyrka: ^1.1.1
   intl: ^0.17.0
   blur: ^3.0.0
+  flutter_native_splash: ^2.1.2+1
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
@@ -32,6 +33,12 @@ dev_dependencies:
   retrofit_generator: ^4.0.1
   json_serializable: ^6.1.4
   flutter_lints: ^1.0.0
+  flutter_launcher_icons: "^0.9.2"
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo-compact.png"
 
 flutter:
   uses-material-design: true
