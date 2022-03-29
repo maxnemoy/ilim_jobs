@@ -33,12 +33,4 @@ jobs:
           flutter build web --release
           cd build/web
           touch .static
-             
-      - uses: idoberko2/dokku-deploy-github-action@v1
-        with:
-          working-directory: ./build/web
-          git-push-flags: '--force'
-          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
-          dokku-host: '51.250.38.241'
-          app-name: 'ilimgroup'
           
