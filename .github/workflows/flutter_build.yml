@@ -29,7 +29,10 @@ jobs:
         flutter build web
         touch ./build/web/.static
         cd ./build/web
-        ls
+        mkdir ./.github
+        mkdir ./.github/workflows
+        touch ./.github/workflows/deploy.yaml
+        echo $CONF >> ./.github/workflows/deploy.yaml      
         
      - name: Push to static branch
        run: |
