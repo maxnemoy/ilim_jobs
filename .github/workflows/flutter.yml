@@ -17,14 +17,9 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '2.10.2'
-          channel: 'stable'
-      - run: |
-          flutter pub get
-          flutter build web --release
-          cd build/web
-          touch .static
+     - uses: actions/checkout@v2
+     - uses: subosito/flutter-action@v2
+       with:
+        channel: 'stable' # or: 'beta' or 'master'
+     - run: flutter --version
           
