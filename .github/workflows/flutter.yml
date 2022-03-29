@@ -30,6 +30,19 @@ jobs:
         touch ./build/web/static
         cd ./build/web
         ls
+        
+     - name: Deploy to GH Pages
+       run: |
+        cd build/web
+        git init
+        git config --global user.email maxnemoy@gmail.com
+        git config --global user.name maxnemoy
+        git status
+        git remote add origin https://${{secrets.GH_KEY}}@github.com/maxnemoy/ilim_jobs.git
+        git checkout -b static
+        git add --all
+        git commit -m "publish"
+        git push origin static -f
        
      - uses: idoberko2/dokku-deploy-github-action@v1
        with:
