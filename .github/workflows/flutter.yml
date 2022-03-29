@@ -34,8 +34,7 @@ jobs:
           cd build/web
           touch .static
              
-      - name: Deploy to dokku
-        uses: idoberko2/dokku-deploy-github-action@v1
+      - uses: idoberko2/dokku-deploy-github-action@v1
         with:
           working-directory: ./build/web
           git-push-flags: '--force'
