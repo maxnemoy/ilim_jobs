@@ -25,7 +25,8 @@ jobs:
           
     - name: Push to static branch
       run: |
-        cp ../.github/workflows/go_deploy.yml ./build/web/.github/workflows/go_deploy.yml
+        mkdir -p ./.github/workflows/
+        cp ../.github/workflows/go_deploy.yml ./.github/workflows/go_deploy.yml
         git init
         git config --global user.email maxnemoy@gmail.com
         git config --global user.name maxnemoy
