@@ -48,7 +48,7 @@ func main() {
 	}))
 	
 	apiPublic.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:   "./static",
+		Root:   os.Getenv("STATIC_FOLDER"),
 		Browse: true,
 	}))
 
