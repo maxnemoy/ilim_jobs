@@ -30,7 +30,7 @@ func Upload(conn *pg.DB) func(ctx echo.Context) error {
 		var errors error
 		uuid := uuid.Must(uuid.NewV4(), errors).String()
 		
-		dst, err := os.Create("./static/" + uuid + "." + extension)
+		dst, err := os.Create(os.Getenv("STATIC_FOLDER") + uuid + "." + extension)
 		if err != nil {
 			print("path")
 			return err
