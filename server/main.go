@@ -57,7 +57,7 @@ func main() {
 
 	// Routes
 	apiPublic.GET("/", root)
-	apiPublic.Static("/static", "./static/")
+	apiPublic.Static("/static", os.Getenv("STATIC_FOLDER"))
 	apiPublic.POST("/import", importer.Import(conn))
 	apiPublic.POST("/user", user.AuthUser(conn))
 	apiPublic.PATCH("/user", user.Update(conn))
