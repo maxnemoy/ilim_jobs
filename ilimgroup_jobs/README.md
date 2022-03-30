@@ -1,10 +1,10 @@
 # ilimgroup_jobs
 
-## Rebuild models 
+## Rebuild models
 
 `flutter pub run build_runner build --delete-conflicting-outputs`
 
-## Getting Started 
+## Getting Started
 
 This project is a starting point for a Flutter application.
 
