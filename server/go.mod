@@ -1,3 +1,4 @@
+// +heroku goVersion go1.17
 module github.com/maxnemoy/ilimjob_server
 
 go 1.17
