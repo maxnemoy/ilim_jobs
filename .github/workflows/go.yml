@@ -1,0 +1,33 @@
+name: Go Deploy
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - server/**
+  pull_request:
+    branches:
+      - master
+    paths:
+      - server/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+     run: 
+      working-directory: ./server
+    steps:
+    - uses: actions/checkout@v2
+      with:
+          fetch-depth: 0
+    - id: deploy
+      name: Deploy to dokku
+      uses: idoberko2/dokku-deploy-github-action@v1
+      with:
+       git-push-flags: '--force'
+       ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+       dokku-host: '51.250.38.241'
+       app-name: 'ilimjob'
+      
