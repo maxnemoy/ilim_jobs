@@ -21,4 +21,4 @@ jobs:
        git-push-flags: '--force'
        ssh-private-key: ${{ secrets.DEPLOY_KEY }}
        dokku-host: '51.250.38.241'
-       app-name: 'ilimjob'
+       app-name: 'ilimapi'
