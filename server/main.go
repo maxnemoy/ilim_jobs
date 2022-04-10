@@ -17,7 +17,6 @@ import (
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/tag"
 	"github.com/maxnemoy/ilimjob_server/handlers/vacancy/request"
 	"github.com/maxnemoy/ilimjob_server/handlers/bookmark"
-	"log"
 	"net/http"
 	"os"
 
@@ -36,7 +35,7 @@ func main() {
 	err := godotenv.Load("./.env")
 
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		//log.Fatal("Error loading .env file")
 	}
 
 	flag.Parse()
@@ -44,7 +43,7 @@ func main() {
 	apiPublic := echo.New()
 
 	apiPublic.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete, http.MethodPatch},
 	}))
 	
 	apiPublic.Use(middleware.StaticWithConfig(middleware.StaticConfig{
