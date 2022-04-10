@@ -26,13 +26,13 @@ class AuthenticationRepository {
   }
 
   FutureOr<void> login(UserData user) async {
-    // try {
-    _auth = await _client.authentication(user);
-    await getBookmarks();
-    //await getResume();
-    // } catch (_) {
-    //   return;
-    // }
+    try {
+      _auth = await _client.authentication(user);
+      await getBookmarks();
+      await getResume();
+    } catch (_) {
+      return;
+    }
   }
 
   FutureOr<void> updateResume() async {
@@ -46,11 +46,14 @@ class AuthenticationRepository {
 
   FutureOr<bool> saveResume(ResumeData data) async {
     try {
-      if (data.id == null) {
-        data = data.copyWith(id: _auth!.userId);
+      print(data.userId);
+      if (data.userId == null) {
+        data = data.copyWith(userId: _auth!.userId);
+
         await _client.createResume(data, _auth!.token);
       } else {
-        await _client.updateResume(data, _auth!.token);
+        print(data);
+        var d = await _client.updateResume(data, _auth!.token);
       }
 
       _resumeData =
