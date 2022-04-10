@@ -197,19 +197,25 @@ class VacancyDetailPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 28, right: 28, bottom: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ZefyrEditor(
-              focusNode: focus,
-              readOnly: true,
-              showCursor: false,
-              controller:
-                  ZefyrController(NotusDocument.fromJson(jsonDecode(data))))
-        ],
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 800),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 28, right: 28, bottom: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ZefyrEditor(
+                  focusNode: focus,
+                  readOnly: true,
+                  showCursor: false,
+                  controller:
+                      ZefyrController(NotusDocument.fromJson(jsonDecode(data))))
+            ],
+          ),
+        ),
       ),
     );
   }
