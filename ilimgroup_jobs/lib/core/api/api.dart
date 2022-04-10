@@ -15,8 +15,8 @@ import 'package:retrofit/retrofit.dart';
 
 part 'api.g.dart';
 
-// String serverBaseUrl = "https://ilimapi.maxnemoy.com";
-String serverBaseUrl = "http://127.0.0.1:6001";
+String serverBaseUrl = "https://ilimapi.maxnemoy.com";
+// String serverBaseUrl = "http://127.0.0.1:6001";
 String uploadPath = "/v1/upload";
 
 @RestApi()
