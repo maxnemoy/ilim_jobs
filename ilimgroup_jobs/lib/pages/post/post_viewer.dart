@@ -148,17 +148,23 @@ class _DetailPageState extends State<PostViewer> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 28, vertical: 20),
-                    child: ZefyrEditor(
-                      //autofocus: true,
-                      //expands: true,
-                      readOnly: true,
-                      showCursor: false,
-                      focusNode: focus,
-                      controller: ZefyrController(
-                          NotusDocument.fromJson(jsonDecode(data.body))),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 800),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 28, vertical: 20),
+                        child: ZefyrEditor(
+                          //autofocus: true,
+                          //expands: true,
+                          readOnly: true,
+                          showCursor: false,
+                          focusNode: focus,
+                          controller: ZefyrController(
+                              NotusDocument.fromJson(jsonDecode(data.body))),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -365,14 +371,20 @@ class CommentView extends StatelessWidget {
           const VerticalDivider(),
           Expanded(
               flex: 3,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: ZefyrEditor(
-                    readOnly: true,
-                    showCursor: false,
-                    focusNode: focusNode,
-                    controller: ZefyrController(
-                        NotusDocument.fromJson(jsonDecode(comment.body)))),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 800),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: ZefyrEditor(
+                        readOnly: true,
+                        showCursor: false,
+                        focusNode: focusNode,
+                        controller: ZefyrController(
+                            NotusDocument.fromJson(jsonDecode(comment.body)))),
+                  ),
+                ),
               ))
         ],
       ),
